@@ -1,0 +1,86 @@
+<App>
+	<JavaScript>var Observable = require("FuseJS/Observable");
+search_field = exports.search_field = Observable("");
+
+loading_visible = exports.loading_visible = Observable("");
+
+issue_data = exports.issue_data = Observable("");
+var loadingNewFeed = Observable(true);
+
+var appendingData = Observable(false);
+var appendinguserData = Observable(false);
+
+var paginationOffset = 1;
+var userpaginationOffset = 1;
+
+api_url = "https://www.bugheist.com/api/v1/"
+
+searchIssues();
+
+function searchIssues(appendData) {
+	if (loading_visible.value == true || paginationOffset >= 31)
+		return;
+
+	loading_visible.value = true;
+	appendingData.value = appendData;
+
+	if (search_field.value) {
+		if (appendingData.value == true){
+			url = api_url + 'issues/?search=' + search_field.value + '&page=' + paginationOffset;
+		}else{
+			url = api_url + 'issues/?search=' + search_field.value;
+		}
+		
+	} else {
+		url = api_url + 'issues/?page=' + paginationOffset;
+	}
+
+	fetch(url , {
+			method: 'GET',
+			
+		}).then(function(response) {
+			return response.json();
+		})
+		.then(function(responseObject) {
+			if (appendingData.value == true) {
+				issue_data.addAll(responseObject.results);
+				appendingData.value = false;
+			}else{
+				issue_data.replaceAll(responseObject.results); 
+			}
+
+			loading_visible.value = false;
+			loadingNewFeed.value = false;
+			paginationOffset++;
+		});
+}
+
+module.exports = {
+	search_field: search_field,
+	loadingNewFeed: loadingNewFeed,
+	searchIssues: searchIssues,
+	
+	dataSource: issue_data,
+	fetchAppendData: function() {
+		searchIssues(true)
+	}
+};
+
+</JavaScript>
+
+	<ScrollView Margin="0,0,0,0" Background="#fff" >
+		<WhileEmpty Items="{search_field}">
+			<WhileScrollable ScrollDirections="Down" Invert="true">
+				<Callback Handler="{fetchAppendData}" />
+			</WhileScrollable>
+		</WhileEmpty>
+		<Panel>
+			<ColumnLayout />
+			<Each Items="{dataSource}" >
+				<Button >
+					<Image Alignment="Top" Margin="2,0,2,2" Url="{screenshot}" MaxWidth="187" />
+				</Button>
+			</Each>
+		</Panel>
+	</ScrollView>
+</App>
