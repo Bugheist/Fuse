@@ -1,0 +1,14 @@
+<Panel ux:Class="nav.Button" Margin="10" Padding="10" FontSize="16">
+	<string ux:Property="Text" />
+	<float ux:Property="FontSize" />
+
+	<Rectangle Layer="Background" Color="#FFFFFF" CornerRadius="4">
+	
+	</Rectangle>
+
+	<blt.Text Value="{ReadProperty Text}" FontSize="{ReadProperty FontSize}" TextAlignment="Center" />
+
+	<WhilePressed>
+		<Scale Factor=".95" Duration=".08" Easing="QuadraticOut" />
+	</WhilePressed>
+</Panel>

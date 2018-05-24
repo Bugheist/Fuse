@@ -1,4 +1,13 @@
 <App>
+	<Page ux:Class="scroller" ux:Name="self" HitTestMode="LocalBoundsAndChildren">
+			<DockLayout />
+			<float4 ux:Property="HeaderColor" />
+			<float4 ux:Property="HeaderTextColor" />
+			<string ux:Property="Instructions" />
+		</Page>
+		<iOS.StatusBarConfig Style="Light" />
+		<Android.StatusBarConfig Color="#DC4353" />
+		<Router ux:Name="router" />
 	<JavaScript>var Observable = require("FuseJS/Observable");
 search_field = exports.search_field = Observable("");
 
@@ -67,20 +76,153 @@ module.exports = {
 };
 
 </JavaScript>
-
-	<ScrollView Margin="0,0,0,0" Background="#fff" >
-		<WhileEmpty Items="{search_field}">
-			<WhileScrollable ScrollDirections="Down" Invert="true">
-				<Callback Handler="{fetchAppendData}" />
-			</WhileScrollable>
-		</WhileEmpty>
-		<Panel>
-			<ColumnLayout />
-			<Each Items="{dataSource}" >
-				<Button >
-					<Image Alignment="Top" Margin="2,0,2,2" Url="{screenshot}" MaxWidth="187" />
-				</Button>
-			</Each>
-		</Panel>
-	</ScrollView>
+	<ClientPanel>
+		<PageControl>
+			<scroller Title="Home" HeaderColor="#595FFF" HeaderTextColor="#fff" Color="#FEFDFC">
+				<Image File="Assets/background.jpg" Layer="Background" StretchMode="Fill" />
+				<EdgeNavigator HitTestMode="LocalBoundsAndChildren" ux:Name="navigator">
+       			<Panel Width="350" EdgeNavigation.Edge="Left" ux:Name="menu">
+            	<Rectangle>
+                <SolidColor Color="#DC4353" >
+		        </SolidColor>
+				<blt.Text Alignment="HorizontalCenter" Margin="0,20" FontSize="50">Bugheist</blt.Text>
+				<blt.Text Alignment="HorizontalCenter" Opacity=".5" Margin="0,80">Bug Logging Tool</blt.Text>
+				<blt.Text Alignment="HorizontalCenter" Opacity=".5" Margin="0,100">-----------------------------------------------------------------------------------</blt.Text>
+				<Text Alignment="HorizontalCenter" Opacity=".5" Margin="5,150" FontSize="30" Color="White" >Home</Text>
+           		</Rectangle>
+      			</Panel>
+        		<Panel>
+				<Image File="Assets/logo.png"  Margin="20"  Alignment="TopLeft"/>
+				<Text Margin="25,60" Opacity=".5" TextAlignment="Center" FontSize="12"  Alignment="TopLeft" TextColor="#000000">Report Issues, Win Prizes</Text>
+				<Panel Height="14%" Background="#FFFFFF" Alignment="Top">
+                <nav2.Button Height="5" Width="40" Margin="20" Alignment="TopRight">
+                    <Clicked>
+                        <Set Target="navigator.Active" Value="menu"/>
+                    </Clicked>
+                </nav2.Button>
+                 <nav.Button Height="5" Width="40" Margin="20,25" Alignment="TopRight">
+                    <Clicked>
+                        <Set Target="navigator.Active" Value="menu"/>
+                    </Clicked>
+                </nav.Button>
+                 <nav2.Button Height="5" Width="40" Margin="20,30" Alignment="TopRight">
+                    <Clicked>
+                        <Set Target="navigator.Active" Value="menu"/>
+                    </Clicked>
+                </nav2.Button>
+                <nav.Button Height="5" Width="40" Margin="20,35" Alignment="TopRight">
+                    <Clicked>
+                        <Set Target="navigator.Active" Value="menu"/>
+                    </Clicked>
+                </nav.Button>
+                 <nav2.Button Height="5" Width="40" Margin="20,40" Alignment="TopRight">
+                    <Clicked>
+                        <Set Target="navigator.Active" Value="menu"/>
+                    </Clicked>
+                </nav2.Button>
+            	</Panel>
+       			</Panel>
+  				</EdgeNavigator>
+  				<ScrollView  AllowedScrollDirections="Vertical">
+			   <Panel Height="75%" Background="#FFFFFF" Alignment="Bottom" Width="92%">
+				<Text  Margin="25,30" Opacity=".5" TextAlignment="Center" FontSize="35"  Alignment="TopCenter" TextColor="#DE4654">FIND BUGS</Text>
+   				<Text  Margin="0,80" Opacity=".5" TextAlignment="Center" FontSize="35"  Alignment="TopCenter" TextColor="#000000" Font="Bold">WIN POINTS PRIZES !</Text>
+				<Text  Margin="15,130" Opacity=".5" TextAlignment="Center" FontSize="12"  Alignment="TopCenter" TextColor="#000000">Enter URL,App name or GPS location of issue</Text>
+				<TextBox PlaceholderText="Enter Website" Margin="50,-50,50,20" Height="30" Width="280" Opacity="0.5" />
+		 		<TextBox PlaceholderText="Description of Issue" Margin="50,-50,50,-180" Height="150" Width="280" Opacity="0.5" />
+		 		<Panel Alignment="BottomCenter" Margin="-16,20,-16,0">
+				<home.Button Text="" Height="30" Width="50" Margin="20,60" Alignment="BottomLeft"></home.Button>
+				<home.Button Text="iOS" Height="30" Width="50" Margin="80,60" Alignment="BottomLeft"></home.Button>
+				<home.Button Text="Android" Height="30" Width="56" Margin="140,60" Alignment="BottomLeft"></home.Button>
+				<home.Button Text="URL" Height="30" Width="50" Margin="207,60" Alignment="BottomLeft"></home.Button>
+				<home.Button Text="Bug Type" Height="30" Width="90" Margin="267,60" Alignment="BottomLeft"></home.Button>
+				<home.Button Text="Upload Screenshot" Height="30" Width="120" Margin="20,20" Alignment="BottomLeft"></home.Button>
+         		<blt.Button Text="REPORT A BUG(+3 points)" FontSize="8" Margin="20" Height="30" Width="120"  Alignment="BottomRight"  />
+				</Panel>
+   				</Panel>
+				</ScrollView>
+				</scroller>
+				<scroller Title="Issues" HeaderColor="#F68FD7" HeaderTextColor="#FFF" Color="#FFF">
+				<Image File="Assets/background.jpg" Layer="Background" StretchMode="Fill" />
+        		<Panel>
+				<Image File="Assets/logo.png"  Margin="20"  Alignment="TopLeft"/>
+				<Text Margin="25,60" Opacity=".5" TextAlignment="Center" FontSize="12"  Alignment="TopLeft" TextColor="#000000">Report Issues, Win Prizes</Text>
+				<Panel Height="14%" Background="#FFFFFF" Alignment="Top">
+            	</Panel>
+				<Panel Height="130" Margin="0,60" Background="#686868" Alignment="Top">
+					<Panel Height="130" Width="50%" Alignment="Left">
+				<Image File="Assets/bustbuy.png"  Margin="20"  Alignment="TopLeft"/>
+   				<Text Dock="Bottom" Margin="0,15" Opacity=".5" TextAlignment="Center" FontSize="12" Alignment="Bottom" TextColor="#FFFFFF" Font="Bold">BUST BUY</Text>
+					</Panel>
+					<Panel Height="130" Width="50%" Margin="0,-180" Alignment="Right" Background="#000000">
+						<Text  Opacity=".5" TextAlignment="Center" Margin="50,40,0,0"  FontSize="15" Alignment="TopLeft" TextColor="#FFFFFF" Font="Bold">Current Bugs</Text>
+						<Text Opacity=".5" Margin="60,67" TextAlignment="Center" FontSize="12" Alignment="CenterLeft" TextColor="#FFFFFF" Font="Bold">: Open Bugs</Text>
+						<Text  Margin="60,30,0,30" Opacity=".5" TextAlignment="Center" FontSize="12" Alignment="BottomLeft" TextColor="#FFFFFF" Font="Bold">: Closed Bugs</Text>
+					</Panel>
+            	</Panel>
+       			</Panel>
+			  	 <Panel Height="75%" Alignment="Bottom">
+			  	 	 <Panel Height="5%" Background="#FFFFFF" Alignment="Bottom">
+			  	 	 <Panel Height="95%" Background="#FFFFFF" Alignment="Bottom">
+			  	 	 </Panel>
+			  	 	 </Panel>
+			  	 	 <Panel Height="15%" Background="#FFFFFF"  Margin="0,20" Alignment="Top" Width="92%">
+			  	 	 	<Text TextAlignment="Center" Font="Bold" Margin="20,18" FontSize="18"  Alignment="Left" TextColor="#000000">RECENT ISSUES</Text>
+			  	 	 	<DropShadow Angle="90" Distance="1" Spread="0.2" Size="2" Color="#00000060" />
+			  	 	 </Panel>
+			  	 	 <Panel Height="85%" Background="#FFFFFF" Alignment="Bottom" Width="92%">
+				<Grid ColumnCount="1" CellSpacing="20">
+				<WhileCount Items="{dataSource}">
+				<Each Items="{dataSource}">
+				<Panel Height="15%" Background="#FFFFFF" Alignment="Top" Width="92%">
+			  	 	 	<Text TextAlignment="Center" Font="Bold" Margin="20,40"  Column="0"  FontSize="10"  Alignment="Left" TextColor="#000000">{description}</Text>
+			  	 	 	<DropShadow Angle="90" Distance="1" Spread="0.2" Size="2" Color="#00000060" />
+			  	 	 </Panel>
+			  	 	 <Panel Height="15%" Background="#FFFFFF" Alignment="Top" Width="92%">
+			  	 	 	
+			  	 	 	<DropShadow Angle="90" Distance="1" Spread="0.2" Size="2" Color="#00000060" />
+			  	 	 </Panel>
+				</Each>
+			</WhileCount>
+				</Grid>
+			   </Panel>
+			</Panel>
+			</scroller>
+			<scroller Title="Leaderboard">
+				<Image File="Assets/background.jpg" Layer="Background" StretchMode="Fill" />
+        		<Panel>
+				<Image File="Assets/logo.png"  Margin="20"  Alignment="TopLeft"/>
+				<Text Margin="25,60" Opacity=".5" TextAlignment="Center" FontSize="12"  Alignment="TopLeft" TextColor="#000000">Report Issues, Win Prizes</Text>
+				<Panel Height="14%" Background="#FFFFFF" Alignment="Top">
+            	</Panel>
+       			</Panel>
+			  	 <Panel Height="85%" Alignment="Bottom">
+			  	 	 <Panel 	 Background="#FFFFFF" Alignment="Bottom">
+			  	 	 <Panel Height="98%" Background="#FFFFFF" Alignment="Bottom">
+			  	 	 </Panel>
+			  	 	 </Panel>
+			  	 	 <Panel  Alignment="Top" Margin="0,-20" Width="92%">
+			  	 	 	<Text TextAlignment="Center" Font="Bold" Margin="20,40" FontSize="25"  Alignment="Center" TextColor="#000000">LeaderBoard</Text>
+			  	 	 </Panel>
+			  	 	 <Panel Height="10%" Background="#FFFFFF" Margin="0,60" Alignment="Top" Width="92%">
+			  	 	 	<Text TextAlignment="Center" Font="Bold" Margin="25,15" FontSize="18"  Alignment="Left" TextColor="#000000">Top Company</Text>
+			  	 	 	<DropShadow Angle="90" Distance="1" Spread="0.2" Size="2" Color="#00000060" />
+			  	 	 </Panel>
+			  	 	 <Panel Height="85%" Background="#FFFFFF" Alignment="Bottom" Width="92%">
+			   	<ColumnLayout />
+				<WhileCount Items="{dataSource}">
+				<Each Items="{dataSource}">
+				<Grid ColumnCount="1">
+				<Panel Height="10%" Background="#FFFFFF" Margin="0" Alignment="Top" Width="92%">
+			  	 	 	<Text TextAlignment="Center" Margin="25,15" FontSize="18"  Alignment="Left" TextColor="#000000">LeaderBoard Details</Text>
+			  	 	 	<DropShadow Angle="90" Distance="1" Spread="0.2" Size="2" Color="#00000060" />
+			  	 	 </Panel>
+				</Grid>
+				</Each>
+			</WhileCount>
+			   </Panel>
+			</Panel>
+			</scroller>
+		</PageControl>
+	</ClientPanel>
 </App>
