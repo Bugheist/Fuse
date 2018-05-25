@@ -1,4 +1,4 @@
-# Bughiest Mobile App (https://www.bugheist.com)
+# Bugheist Mobile App (https://www.bugheist.com)
 
 Bugheist Mobile App
 
@@ -6,10 +6,32 @@ Bugheist Mobile App
 
 Live Site: [Bugheist](http://bugheist.com/)
 
-# Development
+# Developing Bugheist
 
-## Setting Up Development Environment
+## Windows
 
-- To Setup Fusetools on Windows download Fuse for Windows from the downloads page(https://www.fusetools.com/downloads) and run the installer.
-- Start the Fuse daemon simply by typing fuse on the command prompt or by simply opening the Fuse icon on the Desktop.
-- Now Open the Project by Navigating to the project directory and opening the "Bugheist.unoproj" file.
+### Requirements
+
+    - Download Fuse Studio from the downloads page (https://www.fusetools.com/downloads) and run the executable.
+
+### Setting Up Development Environment
+
+    - Start the Fuse Studio daemon by simply typing `fuse` on the command prompt or open the Fuse icon on the Desktop.
+    - Open the project by navigating to the project directory and click on the "Bugheist.unoproj" file from within the Fuse Studio.
+
+## Mac
+
+### Requirements
+
+    - Download Fuse Studio from the downloads page (https://www.fusetools.com/downloads) and run the package.
+
+### Setting Up Development Environment
+
+    - Start the Fuse Studio daemon by simply typing `fuse` on the spotlight search or type `fuse` in the terminal.
+    - Open the project by navigating to the project directory and click on the "Bugheist.unoproj" file from within the Fuse Studio.
+
+# Testing Bugheist
+
+    - Download Fuse Preview on your mobile device from the service store (Play/App).
+    - Follow the on screen instruction to test the application on your device.
+    - You can also use the preview tab in Fuse Studio.
