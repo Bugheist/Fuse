@@ -1,0 +1,13 @@
+<Panel ux:Class="home.Button" Margin="10" Padding="10" FontSize="16">
+	<string ux:Property="Text" />
+	<float ux:Property="FontSize" />
+
+	<Rectangle Layer="Background" Color="#D3D3D3" CornerRadius="0" >
+	</Rectangle>
+
+	<blt.Text Value="{ReadProperty Text}" FontSize="10" TextAlignment="Center" />
+
+	<WhilePressed>
+		<Scale Factor=".95" Duration=".08" Easing="QuadraticOut" />
+	</WhilePressed>
+</Panel>
