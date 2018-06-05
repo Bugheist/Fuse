@@ -1,0 +1,14 @@
+<Panel ux:Class="card.Button" Margin="10" Padding="10" FontSize="16">
+	<string ux:Property="Text" />
+	<float ux:Property="FontSize" />
+
+	<Rectangle Layer="Background" CornerRadius="4">
+	
+	</Rectangle>
+
+	<blt.Text TextAlignment="Center" LineSpacing="2" TextWrapping="Wrap" Font="Bold" Margin="0,60,40,0"  Column="1"  FontSize="10"  Alignment="Right" TextColor="#DE4654" />
+
+	<WhilePressed>
+		<Scale Factor=".95" Duration=".08" Easing="QuadraticOut" />
+	</WhilePressed>
+</Panel>
