@@ -209,8 +209,6 @@ function search() {
             }
 }   
             search_data.replaceAll(responseObject.results);
-        
-            searchflag = true;
         });
     searchflag.value = true;
     searchtype.value = currentMode.value;
