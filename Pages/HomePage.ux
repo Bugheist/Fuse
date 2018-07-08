@@ -1,276 +1,510 @@
 <Page ux:Class="HomePage">
-	<Router ux:Dependency="router" />
-	<WhileWindowPortrait>
+    <Router ux:Dependency="router" />
+    <JavaScript File="HomePage.js" />
 
-	<ClientPanel> 
+    <DockLayout />
+    <ClientPanel>
+        <WhileString Value="{first_launch_flag}" Equals="True">
+            <SplashPage />
+        </WhileString>
+        <Panel Height="70" ux:Name="iconTab" Background="#FFFFFF" Alignment="Top">
+            <Image File="../Assets/logo.png" Margin="20,18,0,25" Alignment="TopLeft" />
+            <Text Margin="18,46,0,0" Opacity="1" TextAlignment="Center" FontSize="12" Alignment="TopLeft" TextColor="#000000">Report Issues, Win Prizes</Text>
+            <WhileFalse ux:Name="isEnabled">
+                <Change searchTab.IsEnabled="False" />
+            </WhileFalse>
+            <WhileTrue ux:Name="isnotEnabled">
+                <Change searchTab.IsEnabled="True" />
+            </WhileTrue>
+            <WhileTrue Value="{loginflag}">
+                 <WhileString Value="{image.user_avatar}" Equals="" >
+                                             <Circle  Margin="120,15,50,40" Alignment="TopRight"  Width="45" Height="45">
+                                                <ImageFill Url="{userimage}" WrapMode="ClampToEdge" />
+                                                <Clicked>
+                        <Set OptionBar.Active="User" />
+                    </Clicked>
+                                            </Circle>
+                                        </WhileString>
+                <WhileString Value="{image.user_avatar}" Equals="" >
+                    <Circle  Margin="120,15,50,40" Alignment="TopRight"  Width="45" Height="45">
+                        <ImageFill File="../Assets/user_avatar.jpg" WrapMode="ClampToEdge" />
+                        <Clicked>
+                        <Set OptionBar.Active="User" />
+                    </Clicked>
+                    </Circle>
+                </WhileString>
+            </WhileTrue>
+            <Image File="../Assets/search.png" Margin="20,20,5,40" Alignment="TopRight" Size="30">
+                <Clicked>
+                    <Hide TargetNode="iconTab" />
+                    <Show TargetNode="searchTab" />
+                    <Toggle Target="isEnabled" />
+                </Clicked>
+            </Image>
+        </Panel>
+        <Panel Height="70" ux:Name="searchTab" Background="#DC4353" Alignment="Top" Visibility="Hidden" IsEnabled="true">
+            <Rectangle CornerRadius="4" Width="80%" Height="40" Alignment="Center" Margin="0,0,5,0">
+                <SolidColor Color="#fff" />
+                <StatusBarBackground />
+                <Text Value="arrow-left" Font="FontAwesome" Margin="-30,10,0,0" Alignment="Left" Color="#fff">
+                    <Clicked>
+                        <Show TargetNode="iconTab" />
+                        <Hide TargetNode="searchTab" />
+                        <Toggle Target="isnotEnabled" />
+                    </Clicked>
+                </Text>
+                <TextInput Row="0" Column="1" Value="{searchbox_field}" PlaceholderColor="#D3D3D3" TextColor="#000000" CaretColor="#fff" Width="85%" Margin="10,0" Alignment="Left " />
+            </Rectangle>
+            <OnBackButton>
+                <Show TargetNode="iconTab" />
+                <Hide TargetNode="searchTab" />
+                <Toggle Target="isnotEnabled" />
+            </OnBackButton>
+            <Image File="../Assets/search.png" Margin="20,20,5,40" Alignment="TopRight" Size="30" Clicked="{SearchPage}">
+            </Image>
+        </Panel>
+        <Panel Alignment="Bottom" Background="#fff">
+            <Grid Columns="1*,1*,1*,1*,1*" DefaultRow="auto">
+                <Selection Value="Home" MaxCount="1" MinCount="1" />
+                <navbar labelbutton="Home" textfont="home" Margin="0,0,0,0">
+                    <Clicked>
+                        <Set OptionBar.Active="Home" />
+                    </Clicked>
+                </navbar>
+                <navbar labelbutton="Owasp" textfont="th" Margin="0,0,0,0">
+                    <Clicked>
+                        <Set OptionBar.Active="Owasp" />
+                    </Clicked>
+                </navbar>
+                <navbar labelbutton="BugHunt" textfont="bug" Margin="0,0,0,0">
+                    <Clicked>
+                        <Set OptionBar.Active="BugHunt" />
+                    </Clicked>
+                </navbar>
+                <navbar labelbutton="Squish" textfont="gift" Margin="0,0,0,0">
+                    <Clicked>
+                        <Set OptionBar.Active="Squish" />
+                    </Clicked>
+                </navbar>
+                <navbar labelbutton="{logintab}" textfont="users" Margin="0,0,0,0">
+                    <Clicked>
+                        <WhileTrue Value="{loginflag}">
+                        <Set UserState.Active="loggedin"/>
+                    <Text Alignment="Center" Value="{loginflag}" FontSize="18" Color="#fff" />
+                    </WhileTrue>
+                        <Set OptionBar.Active="User" />
+                    </Clicked>
+                </navbar>
+            </Grid>
+        </Panel>
+        <PageControl ux:Name="OptionBar" Interaction="None" >
+            <Page ux:Name="Home">
+                <Panel Alignment="Top" Height="60" Margin="0,70" Background="#DC4353">
+                    <Rectangle ux:Name="indicator" CornerRadius="30" Color="#D3D3D3" LayoutMaster="p1" Margin="0,10" Width="100%" ZOffset="0.1" />
+                    <Grid ColumnCount="5" Margin="-30,0">
+                        <Panel ux:Name="p1" Column="0" ColumnSpan="2" />
+                        <Panel ux:Name="p4" Column="3" ColumnSpan="2" />
+                    </Grid>
+                    <Grid ZOffset="1" Margin="-20,0">
+                        <Column ux:Name="col1" Width="1" WidthMetric="Proportion" />
+                        <Column ux:Name="col2" Width="1" WidthMetric="Proportion" />
+                        <Column ux:Name="col3" Width="1" WidthMetric="Proportion" />
+                        <Column ux:Name="col4" Width="1" WidthMetric="Proportion" />
+                        <Text ux:Class="TabHeader" Color="White" Alignment="CenterLeft" Opacity="0" Margin="20,0,0,0" MinWidth="100" FontSize="12" />
+                        <Image ux:Class="TabIcon" Width="25" Height="25" />
+                        <Panel HitTestMode="LocalBounds" Margin="0,0">
+                            <Grid Columns="auto,1*" Margin="40,0" Alignment="Left">
+                                <TabIcon ux:Name="c1" File="../Assets/bug-report.png" Color="#D3D3D3" />
+                                <TabHeader ux:Name="h1" Value="Report Bug" />
+                            </Grid>
+                            <Clicked>
+                                <Set nav.Active="ReportBug" />
+                            </Clicked>
+                        </Panel>
+                        <Panel HitTestMode="LocalBounds">
+                            <Grid Columns="auto,1*" Margin="30,0" Alignment="Left">
+                                <TabIcon ux:Name="c2" File="../Assets/issues.png" />
+                                <TabHeader ux:Name="h2" Value="Issues" />
+                            </Grid>
+                            <Clicked>
+                                <Set nav.Active="Issues" />
+                            </Clicked>
+                        </Panel>
+                        <Panel HitTestMode="LocalBounds">
+                            <Grid Columns="auto,1*" Margin="30,0" Alignment="Left">
+                                <TabIcon ux:Name="c3" File="../Assets/stats.png" />
+                                <TabHeader ux:Name="h3" Value="Leaderboard" />
+                            </Grid>
+                            <Clicked>
+                                <Set nav.Active="Leaderboard" />
+                            </Clicked>
+                        </Panel>
+                        <Panel HitTestMode="LocalBounds">
+                            <Grid Columns="auto,1*" Margin="30,0" Alignment="Left">
+                                <TabIcon ux:Name="c4" File="../Assets/scoreboard.png" />
+                                <TabHeader ux:Name="h4" Value="Scoreboard" />
+                            </Grid>
+                            <Clicked>
+                                <Set nav.Active="Scoreboard" />
+                            </Clicked>
+                        </Panel>
+                    </Grid>
+                </Panel>
+                <PageControl ux:Name="nav" Dock="Fill" Layer="Layout">
+                    <NavigationMotion GotoType="SmoothSnap" />
+                    <Attractor ux:Name="indicatorColorAttractor" Target="indicator.Color" />
+                    <WhileTrue ux:Name="shrinkIndicatorWidth">
+                        <Change indicator.Width="90" Duration="0.25" />
+                    </WhileTrue>
+                    <Page ux:Name="ReportBug" Background="#000000">
+                        <WhileActive Threshold="0.5">
+                            <Set shrinkIndicatorWidth.Value="false" />
+                            <Set indicatorColorAttractor.Value="#D3D3D3" />
+                        </WhileActive>
+                        <ActivatingAnimation>
+                            <Change h1.Opacity="1" />
+                            <Change col1.Width="2" />
+                            <Change c1.Color="White" />
+                        </ActivatingAnimation>
+                        <ScrollView>
+                            <StackPanel Dock="Bottom" Margin="0,0,0,80">
+                                <Panel Height="520" Background="#FFFFFF" Margin="0,130,0,0" Alignment="Bottom" Width="95%">
+                                    <Text Margin="25,30" TextAlignment="Center" FontSize="35" Alignment="TopCenter" TextColor="#DE4654">FIND BUGS</Text>
+                                    <Text Margin="0,80" TextAlignment="Center" FontSize="35" Alignment="TopCenter" TextColor="#000000" Font="Bold">WIN POINTS PRIZES !</Text>
+                                    <Text Margin="15,130" TextAlignment="Center" FontSize="12" Alignment="TopCenter" TextColor="#000000">Enter URL,App name or GPS location of issue</Text>
+                                    <Rectangle Width="280" Margin="0,-160,0,0" Height="30" CornerRadius="20">
+                                        <Stroke Width="1" Brush="#dcdee3" />
+                                        <TextInput PlaceholderText="Enter Wesite" Value="{Issuesite}" Margin="5,5,5,5" BoxSizing="Standard" Alignment="Top" />
+                                    </Rectangle>
+                                    <Rectangle Width="280" Margin="0,50,0,0" Height="150" CornerRadius="20">
+                                        <Stroke Width="1" Brush="#dcdee3" />
+                                        <TextView Value="{Issuedesc}" Margin="5,10,5,5" TextWrapping="Wrap" BoxSizing="Standard" Alignment="Top" Height="150" LayoutRole="Inert" >
+                                            <WhileString Value="{Issuedesc}" Test="IsEmpty">
+                                                <Text TextWrapping="Wrap">Description</Text>
+                                            </WhileString>
+                                        </TextView>
+                                    </Rectangle>
+                                    <Panel Alignment="BottomCenter" Width="100%" Margin="-10,0,0,20">
+                                        <Grid Columns="1*,1*,1*,1*" DefaultRow="auto" Margin="30,65" CellSpacing="10">
+                                            <Selection Value="web" MaxCount="1" MinCount="1" />
+                                            <optionbutton labelbutton="Web" CornerRadius="8,0,0,8" Margin="0,10,0,10" Clicked="{web}" />
+                                            <optionbutton labelbutton="iOS" CornerRadius="0,0,0,0" Margin="0,10,0,10" Clicked="{ios}" />
+                                            <optionbutton labelbutton="Android" CornerRadius="0,0,0,0" Margin="0,10,0,10" Clicked="{android}" />
+                                            <optionbutton labelbutton="URL" CornerRadius="0,8,8,0" Margin="0,10,0,10" Clicked="{link}" />
+                                        </Grid>
+                                        <ComboBox Items="{IssueList}" Value="{Issuetype}" Height="30" Width="100" Margin="12,30" Alignment="BottomRight" />
+                                        <home.Button Text="Upload Screenshot" Height="30" Width="120" Margin="23,30" Alignment="BottomLeft" Clicked="{selectimage}"></home.Button>
+                                        <blt.Button Text="REPORT A BUG(+3 points)" FontSize="8" Margin="30,0,0,-12" Height="40" Width="150" Alignment="BottomCenter" Clicked="{reportIssue}" />
+                                    </Panel>
+                                </Panel>
+                            </StackPanel>
+                        </ScrollView>
+                    </Page>
+                    <Page ux:Name="Issues" Background="#FF0000">
+                        <WhileActive Threshold="0.5">
+                            <Set shrinkIndicatorWidth.Value="true" />
+                            <Set indicatorColorAttractor.Value="#D3D3D3" />
+                        </WhileActive>
+                        <ActivatingAnimation>
+                            <Change h2.Opacity="1" />
+                            <Change col2.Width="2" />
+                            <Change c2.Color="White" />
+                        </ActivatingAnimation>
+                        <Panel ux:Name="contentPlaceholder" Margin="0,130,0,10" />
+                        <DockPanel Background="#D3D3D3">
+                            <Panel Alignment="BottomRight" Margin="10,50" Padding="10">
+                                <Circle Layer="Background" Color="#FFFB" />
+                                <Text Value="⬆" FontSize="45" Color="#000" />
+                                <Clicked>
+                                    <ScrollTo Target="mainScrollView" Position="0,0" />
+                                </Clicked>
+                            </Panel>
+                            <ScrollView ux:Name="mainScrollView" ClipToBounds="false" LayoutMode="PreserveVisual" Margin="0,130,0,50"><WhileScrollable ScrollDirections="Down" Invert="true">
+      <Callback Handler="{fetchAppendData}" />
+    </WhileScrollable>
+                                <StackPanel Margin="0,0,0,0">
+                                    <Panel Height="80" Background="#686868" Alignment="Top" Margin="0,0" ux:Name="infoPanel" LayoutRole="Standard" Layer="Background">
+                                        <Panel Height="100%" Width="50%" Alignment="Left">
+                                            <Text Dock="Bottom" Margin="0,15" Opacity=".5" TextAlignment="Center" FontSize="12" Alignment="Bottom" TextColor="#FFFFFF" Font="Bold">BUST BUY</Text>
+                                        </Panel>
+                                        <Panel Height="80" Width="50%" Margin="0,-180" Alignment="Right" Background="#000000">
+                                            <Text Opacity=".5" TextAlignment="Center" Margin="50,10,0,0" FontSize="15" Alignment="TopLeft" TextColor="#FFFFFF" Font="Bold">Current Bugs</Text>
+                                            <Text Opacity=".5" Margin="060,57,0,57" TextAlignment="Center" FontSize="12" Alignment="CenterLeft" TextColor="#FFFFFF" Font="Bold">{open} : Open Bugs</Text>
+                                            <Text Margin="60,0,0,30" Opacity=".5" TextAlignment="Center" FontSize="12" Alignment="BottomLeft" TextColor="#FFFFFF" Font="Bold">{closed} : Closed Bugs</Text>
+                                        </Panel>
+                                    </Panel>
+                                    <Selection MinCount="0" MaxCount="1" />
+                                    <Each Items="{dataSource}">
+                                        <EventCard layoutTarget="contentPlaceholder">
+                                            <Selectable Value="{id}" />
+                                            <WhileSelected>
+                                                <Change mainScrollView.UserScroll="false" DelayBack="0" />
+                                            </WhileSelected>
+                                        </EventCard>
+                                    </Each>
+                                </StackPanel>
+                            </ScrollView>
+                            <BottomBarBackground Dock="Bottom" />
+                        </DockPanel>
+                        <StackPanel ux:Class="EventCard" ImageHeight="250">
+                            <float ux:Property="ImageHeight" />
+                            <Panel ux:Dependency="layoutTarget" />
+                            <OnBackButton>
+                                <ToggleSelection Mode="RemoveOnly" />
+                            </OnBackButton>
+                            <WhileSelected>
+                                <Change imageAndContent.LayoutMaster="layoutTarget" DelayBack="0" Delay="0" />
+                                <BringToFront />
+                                <Change image.CornerRadius="0" Duration="0.1" DelayBack="0" />
+                                <Change image.Margin="0" Duration="0.25" Delay="0" DelayBack="0" Easing="CubicInOut" />
+                            </WhileSelected>
+                            <WhileSelected Invert="true">
+                                <Change contentScrollView.Opacity="0.4" Duration="0.3" DelayBack="0" />
+                                <Change content.Opacity="0.5" Duration="0.5" DelayBack="0" />
+                                <Move Target="content" Y="30" Duration="0.7" DelayBack="0" Delay="0" Easing="QuadraticIn" />
+                                <Change detailNavigationBar.Opacity="0" Duration="0.2" Delay="0" />
+                                <Change detailNavigationBar.HitTestMode="None" />
+                            </WhileSelected>
+                            <Panel ux:Name="contentLimitPanel" Height="{ReadProperty ImageHeight}">
+                                <DockPanel ux:Name="imageAndContent" ClipToBounds="true" HitTestMode="LocalBoundsAndChildren">
+                                    <LayoutAnimation>
+                                        <Move X="1" RelativeTo="WorldPositionChange" DelayBack="0" Duration="0.2" Easing="QuadraticInOut" />
+                                        <Move Y="1" RelativeTo="WorldPositionChange" DelayBack="0" Duration="0.2" Easing="SinusoidalIn" />
+                                        <Resize X="1" Y="1" RelativeTo="SizeChange" DelayBack="0" Duration="0.25" Easing="QuadraticIn" />
+                                    </LayoutAnimation>
+                                    <Panel Dock="Top" Height="{ReadProperty ImageHeight}">
+                                        <StackPanel ux:Name="detailNavigationBar" Alignment="Top">
+                                            <StatusBarBackground />
+                                            <BackButton Alignment="Left">
+                                                <Clicked>
+                                                    <ToggleSelection Mode="RemoveOnly" />
+                                                </Clicked>
+                                            </BackButton>
+                                        </StackPanel>
+                                        <Panel>
+                                            <Clicked>
+                                                <ToggleSelection Mode="AddOnly" />
+                                            </Clicked>
+                                            <StackPanel Margin="30,15,30,15" Alignment="BottomLeft">
+                                                <Text Value="Added On : {created}" Color="#fff" FontSize="10" />
+                                            </StackPanel>
+                                            <Rectangle ux:Name="image" Layer="Background" CornerRadius="2,2,0,0" Width="100%" Margin="15,0,15,0">
+                                                <SolidColor Color="#444" />
+                                                <ImageFill Url="{screenshot}" StretchMode="UniformToFill" WrapMode="ClampToEdge" />
+                                                <LinearGradient>
+                                                    <GradientStop Color="0,0,0, 0.1" Offset="0" />
+                                                    <GradientStop Color="0,0,0, 0.92" Offset="1" />
+                                                </LinearGradient>
+                                            </Rectangle>
+                                        </Panel>
+                                    </Panel>
+                                    <ScrollView ux:Name="contentScrollView" Background="#fff">
+                                        <StackPanel ux:Name="content" Margin="56,20,20,20" ItemSpacing="10">
+                                            <SmallHeaderText>URL</SmallHeaderText>
+                                            <BodyText Value="{url}" />
+                                            <SmallHeaderText>Added By</SmallHeaderText>
+                                            <WhileString Value="{user}" Equals="False" Invert="True">
+                                                <BodyText Value="{user.username}" />
+                                            </WhileString>
+                                            <WhileString Value="{user}" Equals="False">
+                                                <BodyText Value="Anonymous" />
+                                            </WhileString>
+                                            <SmallHeaderText>Description</SmallHeaderText>
+                                            <BodyText Value="{description}" />
+                                            <SmallHeaderText>Status</SmallHeaderText>
+                                            <BodyText Value="{status}" />
+                                        </StackPanel>
+                                    </ScrollView>
+                                </DockPanel>
+                            </Panel>
+                            <StackPanel Margin="35,10" ItemSpacing="10">
+                                <MutedText Value="Description : {description}" />
+                                <WhileString Value="{user}" Equals="False" Invert="True">
+                                    <Text Value="{label} - Reported By - {user.username}" Color="#DC4353" />
+                                </WhileString>
+                                <WhileString Value="{user}" Equals="False">
+                                    <Text Value="{label} - Reported By - Anonymous" Color="#DC4353" />
+                                </WhileString>
+                            </StackPanel>
+                            <Rectangle Layer="Background" Color="#fff" CornerRadius="2" Margin="15,15,15,0">
+                                <Shadow Size="2" Distance="2" Color="#0003" />
+                            </Rectangle>
+                        </StackPanel>
+                    </Page>
+                    <Page ux:Name="Leaderboard" Background="#800000">
+                        <WhileActive Threshold="0.5">
+                            <Set shrinkIndicatorWidth.Value="true" />
+                            <Set indicatorColorAttractor.Value="#D3D3D3" />
+                        </WhileActive>
+                        <ActivatingAnimation>
+                            <Change h3.Opacity="1" />
+                            <Change col3.Width="2" />
+                            <Change c3.Color="White" />
+                        </ActivatingAnimation>
+                        <ScrollView AllowedScrollDirections="Vertical">
+                            <StackPanel>
+                                <Panel Alignment="Top" Background="#DC4353" Margin="0,130,0,0">
+                                    <Image File="../Assets/leaderboard.jpg" StretchMode="UniformToFill" Size="200" Alignment="Right" />
+                                    <Text Color="#FFF" FontSize="30" Margin="5,0" Font="Bold" Alignment="CenterLeft">Leaderboard</Text>
+                                </Panel>
+                                <Each Items="{leaderboarddata}">
+                                    <DockPanel Margin="10,0,0,50" ux:Name="Scores">
+                                        <WhileString Value="{image.user_avatar}" Equals="https://bhfiles.storage.googleapis.com/" Invert="true">
+                                            <Circle Dock="Left" Width="45" Height="45">
+                                                <ImageFill Url="{image.user_avatar}" WrapMode="ClampToEdge" />
+                                            </Circle>
+                                        </WhileString>
+                                        <WhileString Value="{image.user_avatar}" Equals="https://bhfiles.storage.googleapis.com/">
+                                            <Circle Dock="Left" Width="45" Height="45">
+                                                <ImageFill File="../Assets/user_avatar.jpg" WrapMode="ClampToEdge" />
+                                            </Circle>
+                                        </WhileString>
+                                        <DockPanel Margin="10,4,10,0">
+                                            <StackPanel Dock="Top" Orientation="Horizontal">
+                                                <Name Value="{User}" Font="RobotoMedium" TextAlignment="Left" Alignment="Default" />
+                                            </StackPanel>
+                                            <StackPanel Dock="Bottom" Orientation="Horizontal">
+                                                <SubText Value="Title = {title_type.title}" TextColor="#F2F3FF" />
+                                                <VerticalBar />
+                                                <SubText Value="Points = {score.total_score}" />
+                                                <VerticalBar />
+                                                <SubText Value="Rank = {rank}" />
+                                            </StackPanel>
+                                        </DockPanel>
+                                    </DockPanel>
+                                </Each>
+                            </StackPanel>
+                        </ScrollView>
+                    </Page>
+                    <Page ux:Name="Scoreboard" Background="#FFFF00">
+                        <WhileActive Threshold="0.5">
+                            <Set shrinkIndicatorWidth.Value="false" />
+                            <Set indicatorColorAttractor.Value="#D3D3D3" />
+                        </WhileActive>
+                        <ActivatingAnimation Scale="0.333">
+                            <Move Target="indicator" X="1" RelativeTo="PositionOffset" RelativeNode="p4" />
+                        </ActivatingAnimation>
+                        <ActivatingAnimation>
+                            <Change h4.Opacity="1" />
+                            <Change col4.Width="2" />
+                            <Change c4.Color="White" />
+                        </ActivatingAnimation>
+                    </Page>
+                </PageControl>
+            </Page>
+            <Page ux:Name="Owasp">
+                <Panel Height="81%">
+                    <NativeViewHost>
+                        <WebView Dock="Fill" Url="https://www.facebook.com/groups/owaspfoundation/">
+                            <PageLoaded>
+                            </PageLoaded>
+                            <OnBackButton>
+                                <GoBack />
+                            </OnBackButton>
+                        </WebView>
+                    </NativeViewHost>
+                </Panel>
+            </Page>
+            <Page ux:Name="BugHunt">
+            </Page>
+            <Page ux:Name="Squish">
+            </Page>
+            <Page ux:Name="User" Background="#69359c">
+                <StateGroup ux:Name="UserState" Active="{loginstate}" >
+                    <State  ux:Name="loginpage">
+                <Panel IsEnabled="True">
+                     
+                    <Panel Margin="50" >
+                    <Panel Row="2" Width="350" Height="60" Alignment="Center" Margin="0,350,0,100">
+                        <Text Value="{loginerror}" Color="#ff0000" Margin="40,-30,0,0"/>
+                        <Text ux:Name="text" Alignment="Center" Value="Log in" FontSize="18" Color="#fff" />
+                        <Panel ux:Name="loadingCirclePanel">
+                            <Circle ux:Name="loadingCircle" Width="70%" Height="70%" Opacity="0" StartAngleDegrees="0" LengthAngleDegrees="90">
+                                <Stroke Width="1" Brush="#fff" />
+                            </Circle>
+                        </Panel>
+                        <Clicked>
+                            <Toggle Target="loading" />
+                        </Clicked>
+                        <Rectangle ux:Name="rectNormalScale" CornerRadius="30" Color="#FF3366" Width="300" Height="60" />
+                        <Circle ux:Name="loadingButton" Opacity="0" Alignment="Center" Layer="Background" Width="240" Height="240" Color="#FF3366">
+                            <Scaling Factor="0.25" />
+                        </Circle>
+                    </Panel>
+                    <Panel Row="2" Width="350" Height="60" Alignment="BottomCenter" Margin="0,50,0,50" Clicked="{nolink}">
+                    <Text Alignment="Center" Value="Sign Up" FontSize="18" Color="#fff" />
+                    <Rectangle CornerRadius="30" Color="#FF3366" Width="300" Height="60" />
+                </Panel>
+                    <WhileTrue ux:Name="loading">
+                        <Callback Handler="{login}" />
+                        <Change loadCircle.Value="{loading}" DelayBack="0" />
+                    </WhileTrue>
+                    <WhileTrue ux:Name="loadCircle">
+                        <Change text.Opacity="0" Duration="0.2" DurationBack="0" />
+                        <Change loadingCircle.Opacity="1" Duration="0.3" Delay="0.2" DelayBack="0" DurationBack="0" />
+                        <Spin Target="loadingCircle" Frequency="2" />
+                        <Cycle Target="loadingCircle.LengthAngleDegrees" Low="30" High="300" Frequency="0.7" />
+                    </WhileTrue>
+                    <WhileTrue Value="{loginflag}">
+                        <Set UserState.Active="loggedin"/>
+                    </WhileTrue>
+                    <Grid ux:Name="loginArea" Row="1" Padding="0,20" RowCount="2" Columns="auto,1*" Height="160" MaxWidth="400">
+                        <Image Row="0" Column="0" File="../Assets/user_icon.png" Width="20" Height="20" Margin="10,0,30,0" Alignment="Left" />
+                        <TextInput Row="0" Column="1" Value="{username}" PlaceholderText="Username" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" />
+                        <Rectangle Row="0" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" />
+                        <Image Row="1" Column="0" File="../Assets/password_icon.png" Width="20" Height="20" Margin="10,0,30,0" Alignment="Left" />
+                        <Button Alignment="CenterRight" >
+                            <Text ux:Name="ShowPassword" Value="eye" Color="#fff" Font="FontAwesome" Opacity="1"/>
+                            <WhilePressed>
+                                <Change ShowPassword.Opacity="0.3" />
+                                <Change Pass.IsPassword="false" />
+                            </WhilePressed>
+                        </Button>
+                        <TextInput ux:Name="Pass" Row="1" Column="1" Value="{password}" PlaceholderText="Password" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" IsPassword="true" />
+                        <Rectangle Row="1" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" />
+                    </Grid>
+                </Panel>
+            </Panel>
+            </State>
+            <State ux:Name="loggedin">
+                <Panel Height="30%" Alignment="Top" Margin="0,110,0,0">
 
-			<Panel Dock="Top" Height="90" Background="#FFFFFF" Alignment="Top">
-				<Image File="../Assets/logo.png" Margin="20" Alignment="TopLeft" />
-				<Text Margin="25,60" Opacity="1" TextAlignment="Center" FontSize="12" Alignment="TopLeft" TextColor="#000000">Report Issues, Win Prizes</Text>
-			</Panel>
-	<Panel Height="40" Color="#DC4353" Alignment="BottomCenter" Width="100%">
-		<Panel Margin="0,0,0,5">
-			<Text Font="FontAwesome" Margin="-250,0,0,5" FontSize="25" Alignment="Center" Color="#FFFFFF">home</Text>
-			<Text Font="FontAwesome" Margin="-125,0,0,5" FontSize="25" Alignment="Center" Color="#FFFFFF">th</Text>
-			<Text Font="FontAwesome" Margin="0,0,0,5" FontSize="25" Alignment="Center" Color="#FFFFFF">bug</Text>
-			<Text Font="FontAwesome" Margin="125,0,0,5" FontSize="25" Alignment="Center" Color="#FFFFFF">gift</Text>
-			<Text Font="FontAwesome" Margin="250,0,0,5" FontSize="25" Alignment="Center" Color="#FFFFFF" Clicked="{LoginPage}">users</Text>
-		</Panel>
-			<Panel>
-			<Text Margin="-125,25,0,0" Alignment="Center" FontSize="10" Color="#FFFFFF">Owasp</Text>
-			<Text Margin="0,25,0,0" Alignment="Center" FontSize="10" Color="#FFFFFF">Bug-Hunt</Text>
-			<Text Margin="125,25,0,0" Alignment="Center" FontSize="10" Color="#FFFFFF">Squish</Text>
-			<Text Margin="-250,25,0,0" Alignment="Center" FontSize="10" Color="#FFFFFF">home</Text>
-			<Text Margin="250,25,0,0" Alignment="Center" FontSize="10" Color="#FFFFFF">Login/Signup</Text>
-			</Panel>
-	</Panel>
-		<Image File="../Assets/background.jpg" Layer="Background" StretchMode="Fill" /> 
-		<Panel Dock="Top" Height="60" Background="#DE4654">
-			<Rectangle ux:Name="indicator" CornerRadius="30" Color="#D3D3D3" LayoutMaster="p1" Margin="0,10" Width="100%" ZOffset="0.1"/>
-			<Grid ColumnCount="5" Margin="-30,0">
-				<Panel ux:Name="p1" Column="0" ColumnSpan="2"/>
-				<Panel ux:Name="p4" Column="3" ColumnSpan="2"/>
-			</Grid>
+                     <WhileString Value="{image.user_avatar}" Equals="" >
+                                            <Circle Dock="Left">
+                                                <ImageFill Url="{userimage}" WrapMode="ClampToEdge" />
+                                            </Circle>
+                                        </WhileString>
+                                        <WhileString Value="{userimage}" Equals="">
+                                            <Circle Dock="Left">
+                                                <ImageFill File="../Assets/user_avatar.jpg" WrapMode="ClampToEdge" />
+                                            </Circle>
+                                        </WhileString>
+                                        <Text Alignment="Center" Value="{username}" FontSize="18" Color="#fff"  Margin="50,180,50,50" />
+                                    <StackPanel Margin="50,300,50,50" Background="#DC4353" Height="126">
+                                        
+                                        <Panel Background="#fff" Height="1" />
+                                        <Text Alignment="CenterLeft" Value="Title : {usertitle}" FontSize="18" Color="#fff" Margin="50,20,0,20"/>
+                                         <Panel Background="#fff" Height="1" />
+                                        <WhileString Value="{userwinning}" Equals="">
+                                            <Text Alignment="CenterLeft" Value="Winngings : 0.00" FontSize="18" Color="#fff" Margin="50,20,0,20"/>
+                                        </WhileString>
+                                         <WhileString Value="{userwinning}" Equals="" Invert="true">
+                                        <Text Alignment="CenterLeft" Value="Winngings : {userwinning}" FontSize="18" Color="#fff" Margin="50,0,0,30"/>
+                                    </WhileString>
+                                        <Panel Background="#fff" Height="1" />
+                                    </StackPanel>
 
-			<Grid ZOffset="1" Margin="-20,0">
-				<Column ux:Name="col1" Width="1" WidthMetric="Proportion"/>
-				<Column ux:Name="col2" Width="1" WidthMetric="Proportion"/>
-				<Column ux:Name="col3" Width="1" WidthMetric="Proportion"/>
-				<Column ux:Name="col4" Width="1" WidthMetric="Proportion"/>
-
-				<Text ux:Class="TabHeader" Color="White" Alignment="CenterLeft" Opacity="0" Margin="20,0,0,0" MinWidth="100" FontSize="12"/>
-				<Image ux:Class="TabIcon" Width="25" Height="25" />
-
-				<Panel HitTestMode="LocalBounds" Margin="0,0">
-					<Grid Columns="auto,1*" Margin="40,0" Alignment="Left">
-						<TabIcon ux:Name="c1" File="../Assets/bug-report.png" Color="#D3D3D3"/>
-						<TabHeader ux:Name="h1" Value="Report Bug" />
-					</Grid>
-					<Clicked>
-						<Set nav.Active="Home" />
-					</Clicked>
-				</Panel>
-				<Panel HitTestMode="LocalBounds">
-					<Grid Columns="auto,1*" Margin="30,0" Alignment="Left">
-						<TabIcon ux:Name="c2" File="../Assets/issues.png"/>
-						<TabHeader ux:Name="h2" Value="Issues"/>
-					</Grid>
-					<Clicked>
-						<Set nav.Active="Issues" />
-					</Clicked>
-				</Panel>
-				<Panel HitTestMode="LocalBounds">
-					<Grid Columns="auto,1*" Margin="30,0" Alignment="Left">
-						<TabIcon ux:Name="c3" File="../Assets/stats.png"/>
-						<TabHeader ux:Name="h3" Value="Leaderboard"/>
-
-					</Grid>
-					<Clicked>
-						<Set nav.Active="Leaderboard" />
-					</Clicked>
-				</Panel>
-				<Panel HitTestMode="LocalBounds">
-					<Grid Columns="auto,1*" Margin="30,0" Alignment="Left">
-						<TabIcon ux:Name="c4" File="../Assets/search.png"/>
-						<TabHeader ux:Name="h4" Value="Search"/>
-					</Grid>
-					<Clicked>
-						<Set nav.Active="Search" />
-					</Clicked>
-				</Panel>
-			</Grid>
-		</Panel>
-		<PageControl ux:Name="nav">
-			<NavigationMotion GotoEasing="BackOut" />
-			<Attractor ux:Name="indicatorColorAttractor" Target="indicator.Color" />
-			<WhileTrue ux:Name="shrinkIndicatorWidth">
-				<Change indicator.Width="90" Duration="0.25"/>
-			</WhileTrue>
-			<scroller ux:Name="Home">
-				<WhileActive Threshold="0.5">
-					<Set shrinkIndicatorWidth.Value="false" />
-					<Set indicatorColorAttractor.Value="#D3D3D3" />
-				</WhileActive>
-				<ActivatingAnimation>
-					<Change h1.Opacity="1" />
-					<Change col1.Width="2" />
-					<Change c1.Color="White" />
-				</ActivatingAnimation>
-				<ScrollView>
-					<StackPanel Margin="0,-100,0,0">
-		 	<Panel Height="500" Background="#FFFFFF" Margin="0,100,0,0" Alignment="Bottom" Width="95%">
-
-				<Text Margin="25,30" TextAlignment="Center" FontSize="35" Alignment="TopCenter" TextColor="#DE4654">FIND BUGS</Text>
-   				<Text Margin="0,80" TextAlignment="Center" FontSize="35" Alignment="TopCenter" TextColor="#000000" Font="Bold">WIN POINTS PRIZES !</Text>
-				<Text Margin="15,130" TextAlignment="Center" FontSize="12" Alignment="TopCenter" TextColor="#000000">Enter URL,App name or GPS location of issue</Text>
-				<Panel Height="510" Margin="0,-50,0,50">
-				</Panel>
-       			<TextBox PlaceholderText="Enter Website" Margin="0,180" Alignment="Top" Height="30" Width="280" />
-		 		<TextBox PlaceholderText="Description of Issue" Margin="0,230" Alignment="Top" Height="150" Width="280" />
-				<Panel Alignment="BottomCenter" Width="100%">
-				<home.Button Text="" Height="30" Width="50" Margin="20,60" Alignment="BottomLeft"></home.Button>
-				<home.Button Text="iOS" Height="30" Width="50" Margin="80,60" Alignment="BottomLeft"></home.Button>
-				<home.Button Text="Android" Height="30" Width="56" Margin="140,60" Alignment="BottomLeft"></home.Button>
-				<home.Button Text="URL" Height="30" Width="50" Margin="207,60" Alignment="BottomLeft"></home.Button>
-				<home.Button Text="Bug Type" Height="30" Width="65" Margin="300,60" Alignment="Bottom"></home.Button>
-				<home.Button Text="Upload Screenshot" Height="30" Width="120" Margin="20,20" Alignment="BottomLeft"></home.Button>
-         		<blt.Button Text="REPORT A BUG(+3 points)" FontSize="8" Margin="12,20" Height="30" Width="120" Alignment="BottomRight" />
-				</Panel>
-			</Panel>
-		 </StackPanel>
-		</ScrollView>
-			</scroller>
-			<scroller ux:Name="Issues">
-				<WhileActive Threshold="0.5">
-					<Set shrinkIndicatorWidth.Value="true" />
-					<Set indicatorColorAttractor.Value="#D3D3D3" />
-				</WhileActive>
-				<ActivatingAnimation>
-					<Change h2.Opacity="1" />
-					<Change col2.Width="2" />
-					<Change c2.Color="White" />
-				</ActivatingAnimation>
-				<Panel ux:Name="card" Alignment="VerticalCenter" Margin="40" Padding="20,40,20,0" Opacity="0">
-        <Rectangle Layer="Background" Fill="#fff" CornerRadius="2" Opacity=".8" />
-        <StackPanel Alignment="Default">
-            <Text Alignment="Center" FontSize="30" TextWrapping="Wrap" TextAlignment="Center">Issue Card</Text>
-
-            <Button Text="Close" Margin="0,20,0,0" Padding="10,10,10,50" Clicked="{closeDialog}" HitTestMode="LocalBoundsAndChildren" />
-        </StackPanel>
-
-        <WhileFalse Value="{isDialogShowing}">
-            <Move X="3" RelativeTo="Size" Duration="0.6" Easing="BackIn" />
-            <Scale Factor="0.8" Duration=".6" Easing="BackIn" />
-        </WhileFalse>
-
-        <DropShadow />
-    </Panel>
-    <WhileTrue Value="{isDialogShowing}">
-        <Change card.Opacity="1" Duration=".3" Easing="QuadraticInOut" />
-        <Change mainPanelBlur.Radius="10" Duration=".3" Easing="QuadraticInOut" />
-    </WhileTrue>
-				<Panel Height="80" Background="#686868" Alignment="Top" Margin="0,0">
-            	<Panel Height="100%" Width="50%" Alignment="Left">
-   				<Text Dock="Bottom" Margin="0,15" Opacity=".5" TextAlignment="Center" FontSize="12" Alignment="Bottom" TextColor="#FFFFFF" Font="Bold">BUST BUY</Text>
-				</Panel>
-				<Panel Height="80" Width="50%" Margin="0,-180" Alignment="Right" Background="#000000">
-						<Text Opacity=".5" TextAlignment="Center" Margin="50,10,0,0" FontSize="15" Alignment="TopLeft" TextColor="#FFFFFF" Font="Bold">Current Bugs</Text>
-						<Text Opacity=".5" Margin="60,57" TextAlignment="Center" FontSize="12" Alignment="CenterLeft" TextColor="#FFFFFF" Font="Bold">: Open Bugs</Text>
-						<Text Margin="60,0,0,30" Opacity=".5" TextAlignment="Center" FontSize="12" Alignment="BottomLeft" TextColor="#FFFFFF" Font="Bold">: Closed Bugs</Text>
-					</Panel>
-            	</Panel>
-			  	 <Panel Height="500" Alignment="Top" Margin="0,90">
-			  	<ScrollView AllowedScrollDirections="Vertical">
-			  	 <Panel Height="150%" Alignment="Top">
-			  	 <Panel>
-			  	 </Panel>
-			  	 <Panel Alignment="Top">
-			  	 	 <Panel Margin="0,50">
-			  	 	 <Panel Height="55" Background="#FFFFFF" Margin="0,-40,0,0" Alignment="Top" Width="92%">
-			  	 	 	<Text TextAlignment="Left" Font="Bold" Margin="20,18" FontSize="18" Alignment="Bottom" TextColor="#000000">Recent Issues</Text>
-			  	 	 	<DropShadow Angle="90" Distance="1" Spread="0.2" Size="2" Color="#00000060" />
-			  	 	 </Panel>
-			  	 	 <Panel Height="400" Background="#FFFFFF" Margin="0,18" Alignment="Bottom" Width="92%">
-			  	<ScrollView>
-			  	 <StackPanel>
-				<Grid ColumnCount="1" CellSpacing="0">
-				<WhileCount Items="{dataSource}">
-				<Each Items="{dataSource}">
-						<StackPanel>
-				<Panel Height="110" Background="#FFFFFF" Alignment="Top" Width="92%">
-			  	 	 	<Text TextAlignment="Left" LineSpacing="2" TextWrapping="Wrap" Font="Bold" Margin="50,0,0,0" Column="1" FontSize="10" Alignment="TopLeft" TextColor="#000000">Description : {description}</Text>
-			  	 	 	<Text TextAlignment="Left" LineSpacing="2" TextWrapping="Wrap" Font="Bold" Margin="50,50,0,0" Column="1" FontSize="10" Alignment="TopLeft" TextColor="#000000">URL : {url}</Text>
-			  	 	 	<Panel>
-					    <Button Text="Read More" Name="{id}" Alignment="BottomRight" Height="40" Width="100" Padding="10" Margin="0,20" Clicked="{showDialog}" HitTestMode="LocalBoundsAndChildren" />
-			  	 	 	</Panel>
-			  	 	 	<Text TextAlignment="Center" LineSpacing="2" TextWrapping="Wrap" Font="Bold" Column="1" FontSize="10" Margin="30,20" Alignment="BottomRight" TextColor="#DE4654">Status : {status}</Text>
-			  	 	 </Panel>
-			  	 	 <Panel Height="1" Background="#D2D2D2">
-			  	 	 </Panel>
-			  	 	</StackPanel>
-				</Each>
-			</WhileCount>
-				</Grid>
-
-			  </StackPanel>
-			</ScrollView>
-
-		</Panel>
-	</Panel>
-			</Panel>
-		</Panel>
-	</ScrollView>
-        <Blur ux:Name="mainPanelBlur" Radius="0" />
-		</Panel>
-			</scroller>
-			<scroller ux:Name="Leaderboard">
-				<WhileActive Threshold="0.5">
-					<Set shrinkIndicatorWidth.Value="true" />
-					<Set indicatorColorAttractor.Value="#D3D3D3" />
-				</WhileActive>
-				<ActivatingAnimation>
-					<Change h3.Opacity="1" />
-					<Change col3.Width="2" />
-					<Change c3.Color="White" />
-				</ActivatingAnimation>
-				<Panel Dock="Top" Height="80" Background="#D3D3D3" Alignment="Top">
-				<Text Opacity="1" TextAlignment="Center" FontSize="50" Alignment="VerticalCenter" TextColor="#DC4353">Leaderboard</Text>
-				</Panel>
-			  	<ScrollView AllowedScrollDirections="Vertical">
-			  	 <Panel Height="500" Alignment="Top" Margin="0,90">
-			  	 <Panel Alignment="Bottom">
-			  	 	 <Panel Margin="0,80,0,0">
-			  	 	 <Panel Height="55" Background="#FFFFFF" Margin="0,-150" Alignment="Top" Width="92%">
-			  	 	 	<Text TextAlignment="Center" Font="Bold" Margin="20,18" FontSize="18" Alignment="Bottom" TextColor="#000000">Top Hunters</Text>
-			  	 	 	<DropShadow Angle="90" Distance="1" Spread="0.2" Size="2" Color="#00000060" />
-			  	 	 </Panel>
-			  	 	 <Panel Height="400" Background="#FFFFFF" Margin="0,115" Alignment="Bottom" Width="92%">
-			  	<ScrollView>
-			  	 <StackPanel>
-				<Grid ColumnCount="1" CellSpacing="0">
-				<WhileCount Items="{dataSource}">
-				<Each Items="{dataSource}">
-						<StackPanel>
-				<Panel Height="110" Background="#FFFFFF" Alignment="Top" Width="92%">
-			  	 	 	<Text TextAlignment="Left" LineSpacing="2" TextWrapping="Wrap" Font="Bold" Margin="50,0,0,0" Column="1" FontSize="10" Alignment="TopLeft" TextColor="#000000">Description : {description}</Text>
-			  	 	 	<Text TextAlignment="Left" LineSpacing="2" TextWrapping="Wrap" Font="Bold" Margin="50,50,0,0" Column="1" FontSize="10" Alignment="TopLeft" TextColor="#000000">URL : {url}</Text>
-			  	 	 	<Text TextAlignment="Center" LineSpacing="2" TextWrapping="Wrap" Font="Bold" Margin="0,60,40,0" Column="1" FontSize="10" Alignment="Right" TextColor="#DE4654">Read More</Text>
-			  	 	 	<Text TextAlignment="Center" LineSpacing="2" TextWrapping="Wrap" Font="Bold" Margin="0,80,40,0" Column="1" FontSize="10" Alignment="Right" TextColor="#DE4654">Status : {status}</Text>
-			  	 	 </Panel>
-			  	 	 <Panel Height="1" Background="#D2D2D2">
-			  	 	 </Panel>
-			  	 	</StackPanel>
-				</Each>
-			</WhileCount>
-				</Grid>
-			  </StackPanel>
-			</ScrollView>
-		</Panel>
-	</Panel>
-			</Panel>
-		</Panel>
-	</ScrollView>
-			</scroller>
-			<scroller ux:Name="Search">
-				<WhileActive Threshold="0.5">
-					<Set shrinkIndicatorWidth.Value="false" />
-					<Set indicatorColorAttractor.Value="#D3D3D3" />
-				</WhileActive>
-				<ActivatingAnimation Scale="0.333">
-					<Move Target="indicator" X="1" RelativeTo="PositionOffset" RelativeNode="p4"/>
-				</ActivatingAnimation>
-				<ActivatingAnimation>
-					<Change h4.Opacity="1" />
-					<Change col4.Width="2" />
-					<Change c4.Color="White" />
-				</ActivatingAnimation>
-				
-               
-			</scroller>
-		</PageControl>
-	</ClientPanel>
-</WhileWindowPortrait>
-<WhileWindowLandscape> 
-<Text TextAlignment="Center" LineSpacing="2" TextWrapping="Wrap" Font="Bold" Column="1" FontSize="40" Alignment="VerticalCenter" TextColor="#DE4654">Please Turn Device to Portrait Mode</Text>
-</WhileWindowLandscape>
+                </Panel>
+                <Panel Row="2" Width="350" Height="60" Alignment="BottomCenter" Margin="0,50,0,100" Clicked="{logout}">
+                    <Text Alignment="Center" Value="Log Out" FontSize="18" Color="#fff" />
+                    <WhileFalse Value="{loginflag}">
+                        <Set UserState.Active="loginpage"/>
+                    </WhileFalse>
+                    <Rectangle CornerRadius="30" Color="#FF3366" Width="300" Height="60" />
+                </Panel>
+            </State>
+        </StateGroup>
+            </Page>
+        </PageControl>
+    </ClientPanel>
 </Page>

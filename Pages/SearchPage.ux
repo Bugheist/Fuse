@@ -1,0 +1,200 @@
+<Page ux:Class="SearchPage">
+    <Router ux:Dependency="router" />
+    <DockLayout />
+    <ClientPanel>
+        <NativeViewHost>
+            <WhileString Value="{first_launch_flag}" Equals="True">
+                <SplashPage />
+            </WhileString>
+            <StackPanel>
+                <Text Value="Search Type : " Margin="0,75,150,0" Alignment="Center" Color="#fff"/>
+                <CycleButton Width="50%" Alignment="Top"  Modes="{modes}" CurrentMode="{currentMode}" Margin="100,-25,0,0"/>
+            </StackPanel>
+            <Panel Height="120"  ux:Name="searchTab" Background="#DC4353" Alignment="Top">
+                <Rectangle CornerRadius="4"  Width="80%" Height="40"  Alignment="TopCenter" Margin="0,15,5,0">
+                    <SolidColor Color="#fff" />
+                    <StatusBarBackground />
+                    <Text Value="arrow-left" Font="FontAwesome" Margin="-30,10,0,0" Alignment="Left" Color="#fff">
+                        <Clicked>
+                            <Callback Handler="{back}" />
+                        </Clicked>
+                    </Text>
+                    <TextInput Row="0" Column="1" Value="{searchbox_field}" PlaceholderColor="#D3D3D3" TextColor="#000000" CaretColor="#fff" Width="85%" Margin="10,0" Alignment="Left "/>
+                </Rectangle>
+                <Image File="../Assets/search.png" Margin="20,20,5,40" Alignment="TopRight" Size="30" Clicked="{search}">
+                </Image>
+            </Panel>
+        </NativeViewHost>
+        <Panel ux:Name="contentPlaceholder" Margin="0,150,0,10" Height="85%"/>
+        <DockPanel Background="#D3D3D3">
+            <Panel Alignment="BottomRight" Margin="10,50" Padding="10">
+                <Circle Layer="Background"  Color="#FFFB"/>
+                <Text Value="⬆" FontSize="45" Color="#000"/>
+                <Clicked>
+                    <ScrollTo Target="mainScrollView" Position="0,0" />
+                </Clicked>
+            </Panel>
+            <ScrollView ux:Name="mainScrollView" ClipToBounds="false" LayoutMode="PreserveVisual" Margin="0,125,0,0">
+                <StackPanel Margin="0,0,0,0">
+                    <Selection MinCount="0" MaxCount="1" />
+                    <Each Items="{search_data}">
+                        <SearchCard layoutTarget="contentPlaceholder">
+                            <Selectable Value="{id}" />
+                            <WhileSelected>
+                                <Change mainScrollView.UserScroll="false" DelayBack="0" />
+                            </WhileSelected>
+                        </SearchCard>
+                    </Each>
+                </StackPanel>
+            </ScrollView>
+            <BottomBarBackground Dock="Bottom" />
+        </DockPanel>
+        <StackPanel ux:Class="SearchCard" ImageHeight="250">
+            <float ux:Property="ImageHeight" />
+            <Panel ux:Dependency="layoutTarget" />
+            <OnBackButton>
+                <ToggleSelection Mode="RemoveOnly" />
+            </OnBackButton>
+            <WhileSelected>
+                <Change imageAndContent.LayoutMaster="layoutTarget" DelayBack="0" Delay="0" />
+                <BringToFront />
+                <Change image.CornerRadius="0" Duration="0.1" DelayBack="0" />
+                <Change image.Margin="0" Duration="0.25" Delay="0" DelayBack="0" Easing="CubicInOut" />
+            </WhileSelected>
+            <WhileSelected Invert="true">
+                <Change contentScrollView.Opacity="0.4" Duration="0.3" DelayBack="0" />
+                <Change content.Opacity="0.5" Duration="0.5" DelayBack="0" />
+                <Move Target="content" Y="30" Duration="0.7" DelayBack="0" Delay="0" Easing="QuadraticIn" />
+                <Change detailNavigationBar.Opacity="0" Duration="0.2" Delay="0" />
+                <Change detailNavigationBar.HitTestMode="None" />
+            </WhileSelected>
+            <Panel ux:Name="contentLimitPanel" Height="{ReadProperty ImageHeight}">
+                <DockPanel ux:Name="imageAndContent" ClipToBounds="true" HitTestMode="LocalBoundsAndChildren">
+                    <LayoutAnimation>
+                        <Move X="1" RelativeTo="WorldPositionChange" DelayBack="0" Duration="0.2" Easing="QuadraticInOut" />
+                        <Move Y="1" RelativeTo="WorldPositionChange" DelayBack="0" Duration="0.2" Easing="SinusoidalIn" />
+                        <Resize X="1" Y="1" RelativeTo="SizeChange" DelayBack="0" Duration="0.25" Easing="QuadraticIn" />
+                    </LayoutAnimation>
+                    <Panel Dock="Top" Height="{ReadProperty ImageHeight}">
+                        <StackPanel ux:Name="detailNavigationBar" Alignment="Top">
+                            <StatusBarBackground />
+                            <BackButton Alignment="Left">
+                                <Clicked>
+                                    <ToggleSelection Mode="RemoveOnly" />
+                                </Clicked>
+                            </BackButton>
+                        </StackPanel>
+                        <Panel>
+                            <Clicked>
+                                <ToggleSelection Mode="AddOnly" />
+                            </Clicked>
+                            <StackPanel Margin="30,15,30,15" Alignment="BottomLeft">
+                                 <WhileString Value="{searchtype}" Equals="0">
+                                     <Text Value="Added On : {created}" Color="#fff" FontSize="10" />
+                                 </WhileString>
+                            </StackPanel>
+                            <Rectangle ux:Name="image" Layer="Background" CornerRadius="2,2,0,0" Margin="15,15,15,0">
+                                <SolidColor Color="#444" />
+                                 <WhileString Value="{searchtype}" Equals="0">
+                                <Image Url="{screenshot}" StretchMode="UniformToFill"/>
+                            </WhileString>
+                                 <WhileString Value="{searchtype}" Equals="2">
+                                <Image Url="{logo}" StretchMode="UniformToFill"/>
+                            </WhileString>
+                                 <WhileString Value="{searchtype}" Equals="1">
+                                    <WhileString Value="{user_avatar}" Equals="">
+                                        <Image File="../Assets/user_avatar.jpg" />
+                                    </WhileString>
+                                <Image Url="{user_avatar}" StretchMode="UniformToFill"/>
+                            </WhileString>
+                                <LinearGradient>
+                                    <GradientStop Color="0,0,0, 0.1" Offset="0" />
+                                    <GradientStop Color="0,0,0, 0.92" Offset="1" />
+                                </LinearGradient>
+                            </Rectangle>
+                        </Panel>
+                    </Panel>
+                    <ScrollView ux:Name="contentScrollView" Background="#fff">
+                        <StackPanel ux:Name="content" Margin="56,20,20,20" ItemSpacing="10">
+                            <WhileString Value="{searchtype}" Equals="0">
+                                 <SmallHeaderText>Description </SmallHeaderText>
+                                 <BodyText Value="{description}" />
+                            </WhileString>
+                            <WhileString Value="{searchtype}" Equals="1">
+                                <SmallHeaderText>Name </SmallHeaderText>
+                                <BodyText Value="{user.username}" />
+                            </WhileString>
+                            <WhileString Value="{searchtype}" Equals="2">
+                                <SmallHeaderText>Name </SmallHeaderText>
+                                <BodyText Value="{name}" />
+                            </WhileString>
+                            <WhileString Value="{searchtype}" Equals="0">
+                            <SmallHeaderText>URL</SmallHeaderText>
+                            <BodyText Value="{url}" />
+                        </WhileString>
+                            <WhileString Value="{searchtype}" Equals="0">
+                                <SmallHeaderText>Added By</SmallHeaderText>
+                                    <WhileString Value="{user}" Equals="False" Invert="True">
+                                        <BodyText Value="{user.username}" />
+                                    </WhileString>
+                                    <WhileString Value="{user}" Equals="False">
+                                        <BodyText Value="Anonymous" />
+                                    </WhileString>
+                            </WhileString>
+                            <WhileString Value="{searchtype}" Equals="2">
+                                <SmallHeaderText>Email </SmallHeaderText>
+                                <BodyText Value="{email}" />
+                            </WhileString>
+                            <WhileString Value="{searchtype}" Equals="1">
+                                <SmallHeaderText>Title</SmallHeaderText>
+                                <BodyText Value="{title}" />
+                                <SmallHeaderText>Winnings</SmallHeaderText>
+                                <WhileString Value="{winning}" Equals="">
+                                    <BodyText Value="0.00" />
+                                </WhileString>
+                                <WhileString Value="{winning}" Equals="" Invert="true">
+                                <BodyText Value="{winnings}" />
+                            </WhileString>
+                            </WhileString>
+                            <WhileString Value="{searchtype}" Equals="0">
+                                <SmallHeaderText>Description</SmallHeaderText>
+                                <BodyText Value="{description}" />
+                            </WhileString>
+                            
+                            <WhileString Value="{searchtype}" Equals="0">
+                                <SmallHeaderText>Status</SmallHeaderText>
+                                <BodyText Value="{status}" />
+                            </WhileString>
+                            <WhileString Value="{searchtype}" Equals="2">
+                                <SmallHeaderText>Joined On</SmallHeaderText>
+                                <BodyText Value="{created}" />
+                            </WhileString>
+                        </StackPanel>
+                    </ScrollView>
+                </DockPanel>
+            </Panel>
+            <StackPanel Margin="35,10" ItemSpacing="10">
+                <WhileString Value="{searchtype}" Equals="0">
+                    <MutedText Value="Description : {description}" />
+                </WhileString>
+                <WhileString Value="{searchtype}" Equals="2">
+                    <MutedText Value="Name : {name}" />
+                </WhileString>
+                 <WhileString Value="{searchtype}" Equals="0">
+                <WhileString Value="{user}" Equals="False" Invert="True">
+                    <Text Value="{label} - Reported By - {user.username}" Color="#DC4353"/>
+                </WhileString>
+                <WhileString Value="{user}" Equals="False">
+                    <Text Value="{label} - Reported By - Anonymous" Color="#DC4353" />
+                </WhileString>
+            </WhileString>
+             <WhileString Value="{searchtype}" Equals="1">
+                 <Text Value="{user.username}" Color="#DC4353" />
+            </WhileString>
+            </StackPanel>
+            <Rectangle Layer="Background" Color="#fff" CornerRadius="2" Margin="15,15,15,0">
+                <Shadow Size="2" Distance="2" Color="#0003" />
+            </Rectangle>
+        </StackPanel>
+    </ClientPanel>
+</Page>

@@ -1,0 +1,13 @@
+<Rectangle ux:Class="optionbutton" HitTestMode="LocalBounds" Height="34">
+	<string ux:Property="labelbutton" />
+	<Selectable Value="{Property labelbutton}" />
+	<Text ux:Name="textbutton" Alignment="Center" Color="#DC4353" Value="{Property labelbutton}" />
+	<Stroke Color="#DC4353" />
+	<WhileSelected>
+		<Change textbutton.Color="White" Duration="0.2" />
+		<Change this.Color="#DC4353" Duration="0.2" /> 
+	</WhileSelected>
+	<Tapped>
+		<ToggleSelection />
+	</Tapped>
+</Rectangle>

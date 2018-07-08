@@ -1,0 +1,16 @@
+<Rectangle ux:Class="navbar" HitTestMode="LocalBounds" Height="45" Background="#DC4353">
+	<string ux:Property="labelbutton" />
+	<string ux:Property="textfont" />
+	<Selectable Value="{Property labelbutton}" />
+	<Text ux:Name="textbutton" Alignment="Center" FontSize="10" Color="#fff" Margin="20,0,0,0" Value="{Property labelbutton}" />
+	<Text ux:Name="iconbutton" Alignment="Center" Font="FontAwesome" Color="#fff" Value="{Property textfont}"  Margin="-10,0,30,0"/>
+	<Stroke Color="#DC4353" />
+	<WhileSelected>
+		<Change iconbutton.Color="#DC4353" Duration="0.2" />
+		<Change textbutton.Color="#DC4353" Duration="0.2" />
+		<Change this.Color="#fff" Duration="0.2" /> 
+	</WhileSelected>
+	<Tapped>
+		<ToggleSelection />
+	</Tapped>
+</Rectangle>
