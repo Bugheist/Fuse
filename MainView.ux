@@ -1,11 +1,19 @@
 <App>
+	<Text ux:Class="Name" FontSize="15">
+		<Font File="Assets/Roboto-Bold.ttf" />
+	</Text>
+	<Panel ux:Class="VerticalBar" Margin="8,0,8,2" Alignment="VerticalCenter">
+		<Rectangle Height="12" Width="2" Color="#dcdee3" />
+	</Panel>
+	<Text ux:Class="SubText" Alignment="VerticalCenter" FontSize="12" Color="#7a96b2" />
 	<Font File="Assets/FontAwesome.otf" ux:Global="FontAwesome" />
 	<Font File="Assets/FontAwesome.ttf" ux:Global="FontAwesome2" />
 	<Panel ux:Class="MenuItem" Active="false">
-	<string ux:Property="Label" />
-	<bool ux:Property="Active" />
-</Panel>
-
+		<string ux:Property="Label" />
+		<bool ux:Property="Active" />
+	</Panel>
+    <JavaScript File="MainView.js" />
+    <Text ux:Class="Label" FontSize="10" Color="#FFFFFF" TextWrapping="Wrap" TextAlignment="Center" />
 	<Page ux:Class="scroller" ux:Name="self" HitTestMode="LocalBoundsAndChildren" Visibility="Visible" TransformOrigin="Center" Color="#443E3E00" Alignment="Default">
 		<DockLayout />
 			<bool ux:Property="Instructions" />
@@ -14,117 +22,52 @@
 		<iOS.StatusBarConfig Style="Light" />
 		<Android.StatusBarConfig Color="#DC4353" />
 		<Router ux:Name="router" />
-	<JavaScript>
-var Observable = require("FuseJS/Observable");
-search_field = exports.search_field = Observable("");
-
-loading_visible = exports.loading_visible = Observable("");
-
-issue_data = exports.issue_data = Observable("");
-var loadingNewFeed = Observable(true);
-
-var appendingData = Observable(false);
-var appendinguserData = Observable(false);
-
-var paginationOffset = 1;
-var userpaginationOffset = 1;
-
-api_url = "https://www.bugheist.com/api/v1/"
-
-searchIssues();
-
-function searchIssues(appendData) {
-	if (loading_visible.value == true || paginationOffset >= 31)
-		return;
-
-	loading_visible.value = true;
-	appendingData.value = appendData;
-
-	if (search_field.value) {
-		if (appendingData.value == true){
-			url = api_url + 'issues/?search=' + search_field.value + '&page=' + paginationOffset;
-		}else{
-			url = api_url + 'issues/?search=' + search_field.value;
-		}
-		
-	} else {
-		url = api_url + 'issues/?page=' + paginationOffset;
-	}
-
-	fetch(url , {
-			method: 'GET',
-			
-		}).then(function(response) {
-			return response.json();
-		})
-		.then(function(responseObject) {
-			if (appendingData.value == true) {
-				issue_data.addAll(responseObject.results);
-				appendingData.value = false;
-			}else{
-				issue_data.replaceAll(responseObject.results); 
-			}
-
-			loading_visible.value = false;
-			loadingNewFeed.value = false;
-			paginationOffset++;
-		});
-}
-desc="";
-function LoginPage() {
-	router.goto("login");
-}
-
-var isDialogShowing = Observable(false);
-
-function showDialog() {
-    isDialogShowing.value = true;
-}
-
-function closeDialog() {
-    isDialogShowing.value = false;
-}
-var noConnection = Observable();
-module.exports = {
-	search_field: search_field,
-	loadingNewFeed: loadingNewFeed,
-	searchIssues: searchIssues,
-	dataSource: issue_data,
-	LoginPage: LoginPage,
-    isDialogShowing: isDialogShowing,
-    showDialog: showDialog,
-    closeDialog: closeDialog,
-    noConnection: noConnection,
-	fetchAppendData: function() {
-		searchIssues(true)
-	},
-	goBack: function() {
-		router.goBack();
-	}
-
-};
-fetch('http://example.com', {
-
-		}).then(function(response) {
-
-		}).then(function(responseObject) {
-
-		}).catch(function(error) {
-			console.log("No internet connection");
-			noConnection.value = true;
-		});
-
-</JavaScript>
-		<WhileFalse	Value="{noConnection}">
 		<Navigator DefaultPath="home">
-			<LoginPage ux:Template="login" router="router" />
 			<HomePage ux:Template="home" router="router" />
+			<SearchPage ux:Template="search" router="router" />
 		</Navigator>
-	</WhileFalse>
-	<WhileTrue Value="{noConnection}">
-		<StackPanel Alignment="Center">
-			<Text Value="No internet connection" />
-		</StackPanel>
-	</WhileTrue>
+
+	<Panel ux:Class="ComboBox" HitTestMode="LocalBoundsAndChildren">
+		<object ux:Property="Items" />
+		<string ux:Property="Value" />
+		<string ux:Property="DefaultValue" />
+		<Panel ux:Name="theOuter" Padding="5">
+			<Rectangle Layer="Background" Color="#DC4353">
+			</Rectangle>
+
+			<Label ux:Name="theSelected" Margin="0,5"/>
+	
+			<Tapped>
+				<Set thePopup.Value="true" />
+			</Tapped>
+		</Panel>
+		<Panel ux:Name="theList" Visibility="Hidden" Layer="Overlay" Padding="5">
+			<StackPanel Color="#FAA" Alignment="Top" BoxSizing="NoImplicitMax" Margin="0,-6">
+				<Rectangle Layer="Background" Color="#D3D3D3">
+				</Rectangle>
+				<Selection Value="{Property Value}" MinCount="1" MaxCount="1" />
+				<Each Items="{ReadProperty Items}">
+					<Panel ux:Name="thePanel" Color="#0000" Margin="0">
+						<Selectable Value="{value}" />
+						<Label Value="{label}"/>
+						<WhileSelected>
+							<Change thePanel.Color="#DC4353" />
+							<Change Target="theSelected.Value" Value="{label}" />
+						</WhileSelected>
+						
+						<Tapped>
+							<ToggleSelection />
+							<Set thePopup.Value="false" />
+						</Tapped>
+					</Panel>
+				</Each>
+			</StackPanel>
+		</Panel>
+		
+		<WhileTrue ux:Name="thePopup">
+			<Change theList.Visibility="Visible" />
+			<Change theOuter.Visibility="Hidden" />
+		</WhileTrue>
+	</Panel>
 	
 </App>

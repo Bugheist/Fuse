@@ -1,11 +1,25 @@
 {
   "RootNamespace":"",
+  "Orientations": "Portrait",
   "Packages": [
     "Fuse",
-    "FuseJS"
+    "FuseJS",
+    "Fuse.Camera",
+    "Fuse.CameraRoll",
+    "Fuse.ImageTools"
   ],
   "Includes": [
     "*"
-  ]
+  ],
+  "Android": {
+      "Icons": {
+          "LDPI": "Assets/ldpi.png",
+          "MDPI": "Assets/mdpi.png",
+          "HDPI": "Assets/hdpi.png",
+          "XHDPI": "Assets/xhdpi.png",
+          "XXHDPI": "Assets/xxhdpi.png",
+          "XXXHDPI": "Assets/xxxhdpi.png",
+      }
+ }
 }
 
