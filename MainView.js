@@ -11,7 +11,7 @@ var paginationOffset = 1;
 var userpaginationOffset = 1;
 var search_data = exports.search_data = Observable("");
 var leaderboarddata = exports.leaderboarddata = Observable("");
-var api_url = "https://www.bugheist.com/api/v1/"
+var api_url = "https://www.bugheist.com/api/v1/";
 var FileSystem = require("FuseJS/FileSystem");
 var Storage = require("FuseJS/Storage");
 var first_launch = FileSystem.dataDirectory + "/" + "first_launch_data.json";
@@ -21,10 +21,10 @@ var screenshotupload =  Observable("Upload");
 var cameraRoll = require("FuseJS/CameraRoll");
 var username = Observable("");
 var password = Observable("");
-var usertoken = Observable("1");
+var usertoken = Observable("");
 var loginflag = Observable(false);
 var loginerror = Observable("");
-var loading = Observable("false");
+var loading = Observable(false);
 var user_id = Observable("");
 var user = exports.user = Observable("");
 var logintab = Observable("Login");
@@ -36,6 +36,9 @@ var usertitle = Observable("");
 var userwinning = Observable("");
 var userupvoted = Observable("");
 var loginstate = Observable("");
+var Camera = require('FuseJS/Camera');
+var ImageTools = require('FuseJS/ImageTools');
+var web_url = "https://www.bugheist.com/";
 function logout() {
     loginstate.value = "loginpage";
     loginflag.value  = false;
@@ -125,7 +128,6 @@ function checkfirst_launch() {
     Storage.read(first_launch).then(function(content) {
         first_launch_flag.value = false;
         var data = JSON.parse(content);
-        console.log(first_launch)
     }, function(error) {
         var storeObject = {
             first_launch: false
@@ -140,7 +142,6 @@ checkuser();
 function checkuser(){
 Storage.read(tokenfile).then(function(content) {
         var data = JSON.parse(content);
-        console.log(JSON.stringify(data.token));
         if(data.id != null)
         logintab.value = "Profile";
         loginflag.value = true;
@@ -300,16 +301,11 @@ function searchIssues(appendData) {
                 paginationOffset++;
             });
 }
-
+count();
 var open = Observable("0");
 var closed = Observable("0");
-var openCount = 0;
-var closedCount = 0;
-
-function count(callback) {
-    var paging = 1;
-    while(paging<=100) {
-        url = api_url + 'issues/?page=' + paging;
+function count() {
+        url = api_url + "count/";
         fetch(url, {
                 method: 'GET',
 
@@ -317,29 +313,10 @@ function count(callback) {
                 return response.json();
             })
             .then(function(responseObject) {
-                for (j in responseObject.results)
-                    callback(responseObject.results[j]);
-                if(responseObject.next==null)
-                    return;
+                open.value = responseObject.open;
+                closed.value = responseObject.closed;
             });
-            paging++;
     }
-}
-
-count(function(data) {
-    if (data.status == "open")
-        openCount++;
-    else
-        closedCount++;
-    closed.value = closedCount;
-    open.value = openCount;
-});
-createIssue = {
-    "url": "",
-    "description": "",
-    "label": null,
-    "screenshot": null
-};
 
 var Issuesite = Observable("");
 var Issuedesc = Observable("");
@@ -347,7 +324,6 @@ var Issuedevice = Observable("");
 
 function web() {
     Issuedevice.value = "web";
-    return "abc";
 }
 
 function ios() {
@@ -386,24 +362,44 @@ function reportIssue() {
     } else if (Issuetype.value == "design") {
         Issuetype.value = 6;
     }
-    createIssue = {
-        url: Issuesite.value,
-        description: Issuedesc.value,
-        label: Issuetype.value,
-        screenshot: screenshotupload.value
-    };
-    reporturl = "http://192.168.0.101:8000/api/v1/createissues/";
-    fetch(reporturl, {
+     if(screenshotupload.value != "Upload"){
+        if(usertoken.value=="")
+            console.log("NOT LOGIN")
+        else{
+        var obj = {"dom_url":Issuesite.value};
+        var url = web_url + "domain_check/" ;
+    fetch(url, {
         method: 'POST',
         headers: { "Content-type": "application/json"},
-        body: JSON.stringify(createIssue)
+        body: JSON.stringify(obj)
     }).then(function(response) {
-    status = response.status;  // Get the HTTP status code
-    response_ok = response.ok; // Is response.status in the 200-range?
-    return response.json();    // This returns a promise
-    }).then(function(responseObject) {
-    })
-    return;
+        console.log(response)
+    });
+        var Base64 = require("FuseJS/Base64");
+        var arrayBuff = FileSystem.readBufferFromFileSync(screenshotupload.value);
+        var b64data = Base64.encodeBuffer(arrayBuff);
+        var arr = screenshotupload.value.split(".");      // Split the string using dot as separator
+        var imgtype = arr.pop();
+        var send_data = "url=" + Issuesite.value +"&description=" + Issuedesc.value +"&label=" + Issuetype.value +"&token=" + usertoken.value +"&file=" + b64data +"&type=" +imgtype;
+        var obj = {"url":Issuesite.value,"description":Issuedesc.value,"label":Issuetype.value ,"token":usertoken.value ,"file":b64data,"type":imgtype};
+        var xhr = new XMLHttpRequest();
+xhr.withCredentials = true;
+
+xhr.addEventListener("readystatechange", function () {
+  if (this.readyState === 4) {
+  }
+});
+        xhr.open("POST", "https://www.bugheist.com/api/v1/createissues/");
+xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+xhr.setRequestHeader("Cache-Control", "no-cache");
+xhr.setRequestHeader("Postman-Token", "03cdb8c9-9614-4a23-a413-022dbfc1ca20");
+
+xhr.send(JSON.stringify(obj));
+        }
+    }
+    else{
+        console.log("NO SCREENSHOT")
+    }
 }
 
 function back() {
@@ -413,7 +409,9 @@ function back() {
 function SearchPage() {
     router.push("search");
 }
-
+function UserIssue() {
+    router.push("userissue");
+}
 function HomePage() {
     first_launch_flag.value = false;
     var empty = new Object();
@@ -509,6 +507,7 @@ module.exports = {
     search_data: search_data,
     searchbox_field: searchbox_field,
     search: search,
+    UserIssue: UserIssue,
     SearchPage: SearchPage,
     leaderboarddata: leaderboarddata,
     appendingData: appendingData,

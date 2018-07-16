@@ -409,7 +409,7 @@
             </Page>
             <Page ux:Name="Squish">
             </Page>
-            <Page ux:Name="User" Background="#69359c">
+            <Page ux:Name="User" Background="#D3D3D3">
                 <StateGroup ux:Name="UserState" Active="{loginstate}" >
                     <State  ux:Name="loginpage">
                 <Panel IsEnabled="True">
@@ -453,13 +453,6 @@
                         <TextInput Row="0" Column="1" Value="{username}" PlaceholderText="Username" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" />
                         <Rectangle Row="0" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" />
                         <Image Row="1" Column="0" File="../Assets/password_icon.png" Width="20" Height="20" Margin="10,0,30,0" Alignment="Left" />
-                        <Button Alignment="CenterRight" >
-                            <Text ux:Name="ShowPassword" Value="eye" Color="#fff" Font="FontAwesome" Opacity="1"/>
-                            <WhilePressed>
-                                <Change ShowPassword.Opacity="0.3" />
-                                <Change Pass.IsPassword="false" />
-                            </WhilePressed>
-                        </Button>
                         <TextInput ux:Name="Pass" Row="1" Column="1" Value="{password}" PlaceholderText="Password" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" IsPassword="true" />
                         <Rectangle Row="1" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" />
                     </Grid>
@@ -467,7 +460,11 @@
             </Panel>
             </State>
             <State ux:Name="loggedin">
-                <Panel Height="30%" Alignment="Top" Margin="0,110,0,0">
+                <ScrollView>
+                <StackPanel Margin="0,50,0,50">
+                    <Rectangle CornerRadius="0,0,15,15" Height="350">
+                        <SolidColor Color="#DC4353" />
+                <Rectangle Height="150" Alignment="Top" Margin="0,70,0,0"  CornerRadius="4,4,4,4">
 
                      <WhileString Value="{image.user_avatar}" Equals="" >
                                             <Circle Dock="Left">
@@ -479,8 +476,10 @@
                                                 <ImageFill File="../Assets/user_avatar.jpg" WrapMode="ClampToEdge" />
                                             </Circle>
                                         </WhileString>
-                                        <Text Alignment="Center" Value="{username}" FontSize="18" Color="#fff"  Margin="50,180,50,50" />
-                                    <StackPanel Margin="50,300,50,50" Background="#DC4353" Height="126">
+                                        <Text Alignment="Center" Value="{username}" FontSize="18" Color="#fff"  Margin="50,200,50,50" />
+                                    </Rectangle>
+                                </Rectangle>
+                                    <StackPanel Margin="50,50,50,50" Background="#DC4353">
                                         
                                         <Panel Background="#fff" Height="1" />
                                         <Text Alignment="CenterLeft" Value="Title : {usertitle}" FontSize="18" Color="#fff" Margin="50,20,0,20"/>
@@ -492,16 +491,19 @@
                                         <Text Alignment="CenterLeft" Value="Winngings : {userwinning}" FontSize="18" Color="#fff" Margin="50,0,0,30"/>
                                     </WhileString>
                                         <Panel Background="#fff" Height="1" />
+                                        <Panel Background="#fff" Height="1" Clicked="{UserIssue}"/>
+                                        <Text Alignment="CenterLeft" Value="Bugs Reported" FontSize="18" Color="#fff" Margin="50,20,0,20"/>
+                                        <Panel Background="#fff" Height="1" />
                                     </StackPanel>
-
-                </Panel>
-                <Panel Row="2" Width="350" Height="60" Alignment="BottomCenter" Margin="0,50,0,100" Clicked="{logout}">
-                    <Text Alignment="Center" Value="Log Out" FontSize="18" Color="#fff" />
+                                    <Panel Row="2" Width="350" Height="60"  Clicked="{logout}" Alignment="Bottom">
+                    <Text Alignment="Center" Value="Log Out"  FontSize="18" Color="#fff" />
                     <WhileFalse Value="{loginflag}">
                         <Set UserState.Active="loginpage"/>
                     </WhileFalse>
-                    <Rectangle CornerRadius="30" Color="#FF3366" Width="300" Height="60" />
+                    <Rectangle CornerRadius="30" Color="#DC4353" Width="300" Height="60" />
                 </Panel>
+            </StackPanel>
+        </ScrollView>
             </State>
         </StateGroup>
             </Page>

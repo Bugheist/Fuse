@@ -25,6 +25,7 @@
 		<Navigator DefaultPath="home">
 			<HomePage ux:Template="home" router="router" />
 			<SearchPage ux:Template="search" router="router" />
+			<UserIssue ux:Template="userissue" router="router" />
 		</Navigator>
 
 	<Panel ux:Class="ComboBox" HitTestMode="LocalBoundsAndChildren">

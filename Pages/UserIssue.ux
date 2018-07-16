@@ -1,0 +1,3 @@
+<Page ux:Class="UserIssue">
+	<Router ux:Dependency="router" />
+</Page>
