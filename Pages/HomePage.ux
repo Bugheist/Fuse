@@ -1,7 +1,6 @@
 <Page ux:Class="HomePage">
     <Router ux:Dependency="router" />
     <JavaScript File="HomePage.js" />
-
     <DockLayout />
     <ClientPanel>
         <WhileString Value="{first_launch_flag}" Equals="True">
@@ -17,20 +16,20 @@
                 <Change searchTab.IsEnabled="True" />
             </WhileTrue>
             <WhileTrue Value="{loginflag}">
-                 <WhileString Value="{image.user_avatar}" Equals="" >
-                                             <Circle  Margin="120,15,50,40" Alignment="TopRight"  Width="45" Height="45">
-                                                <ImageFill Url="{userimage}" WrapMode="ClampToEdge" />
-                                                <Clicked>
-                        <Set OptionBar.Active="User" />
-                    </Clicked>
-                                            </Circle>
-                                        </WhileString>
+                <WhileString Value="{image.user_avatar}" Equals="" >
+                    <Circle  Margin="120,15,50,40" Alignment="TopRight"  Width="45" Height="45">
+                        <ImageFill Url="{userimage}" WrapMode="ClampToEdge" />
+                        <Clicked>
+                            <Set OptionBar.Active="User" />
+                        </Clicked>
+                    </Circle>
+                </WhileString>
                 <WhileString Value="{image.user_avatar}" Equals="" >
                     <Circle  Margin="120,15,50,40" Alignment="TopRight"  Width="45" Height="45">
                         <ImageFill File="../Assets/user_avatar.jpg" WrapMode="ClampToEdge" />
                         <Clicked>
-                        <Set OptionBar.Active="User" />
-                    </Clicked>
+                            <Set OptionBar.Active="User" />
+                        </Clicked>
                     </Circle>
                 </WhileString>
             </WhileTrue>
@@ -42,7 +41,7 @@
                 </Clicked>
             </Image>
         </Panel>
-        <Panel Height="70" ux:Name="searchTab" Background="#DC4353" Alignment="Top" Visibility="Hidden" IsEnabled="true">
+        <Panel Height="70" ux:Name="searchTab" Background="#388E3C" Alignment="Top" Visibility="Hidden" IsEnabled="true">
             <Rectangle CornerRadius="4" Width="80%" Height="40" Alignment="Center" Margin="0,0,5,0">
                 <SolidColor Color="#fff" />
                 <StatusBarBackground />
@@ -53,7 +52,7 @@
                         <Toggle Target="isnotEnabled" />
                     </Clicked>
                 </Text>
-                <TextInput Row="0" Column="1" Value="{searchbox_field}" PlaceholderColor="#D3D3D3" TextColor="#000000" CaretColor="#fff" Width="85%" Margin="10,0" Alignment="Left " />
+                <TextInput Row="0" Column="1" Value="{searchbox_field}" PlaceholderColor="#67c26b" TextColor="#000000" CaretColor="#fff" Width="85%" Margin="10,0" Alignment="Left " />
             </Rectangle>
             <OnBackButton>
                 <Show TargetNode="iconTab" />
@@ -89,9 +88,9 @@
                 <navbar labelbutton="{logintab}" textfont="users" Margin="0,0,0,0">
                     <Clicked>
                         <WhileTrue Value="{loginflag}">
-                        <Set UserState.Active="loggedin"/>
-                    <Text Alignment="Center" Value="{loginflag}" FontSize="18" Color="#fff" />
-                    </WhileTrue>
+                            <Set UserState.Active="loggedin"/>
+                            <Text Alignment="Center" Value="{loginflag}" FontSize="18" Color="#fff" />
+                        </WhileTrue>
                         <Set OptionBar.Active="User" />
                     </Clicked>
                 </navbar>
@@ -99,8 +98,8 @@
         </Panel>
         <PageControl ux:Name="OptionBar" Interaction="None" >
             <Page ux:Name="Home">
-                <Panel Alignment="Top" Height="60" Margin="0,70" Background="#DC4353">
-                    <Rectangle ux:Name="indicator" CornerRadius="30" Color="#D3D3D3" LayoutMaster="p1" Margin="0,10" Width="100%" ZOffset="0.1" />
+                <Panel Alignment="Top" Height="60" Margin="0,70" Background="#388E3C">
+                    <Rectangle ux:Name="indicator" CornerRadius="30" Color="#67c26b" LayoutMaster="p1" Margin="0,10" Width="100%" ZOffset="0.1" />
                     <Grid ColumnCount="5" Margin="-30,0">
                         <Panel ux:Name="p1" Column="0" ColumnSpan="2" />
                         <Panel ux:Name="p4" Column="3" ColumnSpan="2" />
@@ -114,7 +113,7 @@
                         <Image ux:Class="TabIcon" Width="25" Height="25" />
                         <Panel HitTestMode="LocalBounds" Margin="0,0">
                             <Grid Columns="auto,1*" Margin="40,0" Alignment="Left">
-                                <TabIcon ux:Name="c1" File="../Assets/bug-report.png" Color="#D3D3D3" />
+                                <TabIcon ux:Name="c1" File="../Assets/bug-report.png" Color="#67c26b" />
                                 <TabHeader ux:Name="h1" Value="Report Bug" />
                             </Grid>
                             <Clicked>
@@ -156,10 +155,10 @@
                     <WhileTrue ux:Name="shrinkIndicatorWidth">
                         <Change indicator.Width="90" Duration="0.25" />
                     </WhileTrue>
-                    <Page ux:Name="ReportBug" Background="#000000">
+                    <Page ux:Name="ReportBug" Background="#fff">
                         <WhileActive Threshold="0.5">
                             <Set shrinkIndicatorWidth.Value="false" />
-                            <Set indicatorColorAttractor.Value="#D3D3D3" />
+                            <Set indicatorColorAttractor.Value="#67c26b" />
                         </WhileActive>
                         <ActivatingAnimation>
                             <Change h1.Opacity="1" />
@@ -169,9 +168,10 @@
                         <ScrollView>
                             <StackPanel Dock="Bottom" Margin="0,0,0,80">
                                 <Panel Height="520" Background="#FFFFFF" Margin="0,130,0,0" Alignment="Bottom" Width="95%">
-                                    <Text Margin="25,30" TextAlignment="Center" FontSize="35" Alignment="TopCenter" TextColor="#DE4654">FIND BUGS</Text>
+                                    <Text Margin="25,30" TextAlignment="Center" FontSize="35" Alignment="TopCenter" TextColor="#388E3C">FIND BUGS</Text>
                                     <Text Margin="0,80" TextAlignment="Center" FontSize="35" Alignment="TopCenter" TextColor="#000000" Font="Bold">WIN POINTS PRIZES !</Text>
                                     <Text Margin="15,130" TextAlignment="Center" FontSize="12" Alignment="TopCenter" TextColor="#000000">Enter URL,App name or GPS location of issue</Text>
+                                    <Text Margin="0,150" TextAlignment="Center" FontSize="8" Alignment="TopCenter" TextColor="#ff0000" Font="Bold">{dom_check}</Text>
                                     <Rectangle Width="280" Margin="0,-160,0,0" Height="30" CornerRadius="20">
                                         <Stroke Width="1" Brush="#dcdee3" />
                                         <TextInput PlaceholderText="Enter Wesite" Value="{Issuesite}" Margin="5,5,5,5" BoxSizing="Standard" Alignment="Top" />
@@ -194,16 +194,18 @@
                                         </Grid>
                                         <ComboBox Items="{IssueList}" Value="{Issuetype}" Height="30" Width="100" Margin="12,30" Alignment="BottomRight" />
                                         <home.Button Text="Upload Screenshot" Height="30" Width="120" Margin="23,30" Alignment="BottomLeft" Clicked="{selectimage}"></home.Button>
-                                        <blt.Button Text="REPORT A BUG(+3 points)" FontSize="8" Margin="30,0,0,-12" Height="40" Width="150" Alignment="BottomCenter" Clicked="{reportIssue}" />
+                                        <home.Button Text="Check Duplicates" Height="30" Width="120" Margin="32,30,0,30" Alignment="BottomCenter" Clicked="{domaincheck}"></home.Button>
+                                        <Text Value="{screenshotname}" Color="#388E3C" Margin="5,0,0,60" FontSize="8" Alignment="BottomLeft" />
+                                        <blt.Button Text="REPORT A BUG(+3 points)" FontSize="8" Margin="30,0,0,-20" Height="40" Width="150" Alignment="BottomCenter" Clicked="{reportIssue}" />
                                     </Panel>
                                 </Panel>
                             </StackPanel>
                         </ScrollView>
                     </Page>
-                    <Page ux:Name="Issues" Background="#FF0000">
+                    <Page ux:Name="Issues" Background="#fff">
                         <WhileActive Threshold="0.5">
                             <Set shrinkIndicatorWidth.Value="true" />
-                            <Set indicatorColorAttractor.Value="#D3D3D3" />
+                            <Set indicatorColorAttractor.Value="#67c26b" />
                         </WhileActive>
                         <ActivatingAnimation>
                             <Change h2.Opacity="1" />
@@ -211,7 +213,7 @@
                             <Change c2.Color="White" />
                         </ActivatingAnimation>
                         <Panel ux:Name="contentPlaceholder" Margin="0,130,0,10" />
-                        <DockPanel Background="#D3D3D3">
+                        <DockPanel Background="#fff">
                             <Panel Alignment="BottomRight" Margin="10,50" Padding="10">
                                 <Circle Layer="Background" Color="#FFFB" />
                                 <Text Value="⬆" FontSize="45" Color="#000" />
@@ -219,9 +221,10 @@
                                     <ScrollTo Target="mainScrollView" Position="0,0" />
                                 </Clicked>
                             </Panel>
-                            <ScrollView ux:Name="mainScrollView" ClipToBounds="false" LayoutMode="PreserveVisual" Margin="0,130,0,50"><WhileScrollable ScrollDirections="Down" Invert="true">
-      <Callback Handler="{fetchAppendData}" />
-    </WhileScrollable>
+                            <ScrollView ux:Name="mainScrollView" ClipToBounds="false" LayoutMode="PreserveVisual" Margin="0,130,0,50">
+                                <WhileScrollable ScrollDirections="Down" Invert="true">
+                                    <Callback Handler="{fetchAppendData}" />
+                                </WhileScrollable>
                                 <StackPanel Margin="0,0,0,0">
                                     <Panel Height="80" Background="#686868" Alignment="Top" Margin="0,0" ux:Name="infoPanel" LayoutRole="Standard" Layer="Background">
                                         <Panel Height="100%" Width="50%" Alignment="Left">
@@ -320,10 +323,10 @@
                             <StackPanel Margin="35,10" ItemSpacing="10">
                                 <MutedText Value="Description : {description}" />
                                 <WhileString Value="{user}" Equals="False" Invert="True">
-                                    <Text Value="{label} - Reported By - {user.username}" Color="#DC4353" />
+                                    <Text Value="{label} - Reported By - {user.username}" Color="#388E3C" />
                                 </WhileString>
                                 <WhileString Value="{user}" Equals="False">
-                                    <Text Value="{label} - Reported By - Anonymous" Color="#DC4353" />
+                                    <Text Value="{label} - Reported By - Anonymous" Color="#388E3C" />
                                 </WhileString>
                             </StackPanel>
                             <Rectangle Layer="Background" Color="#fff" CornerRadius="2" Margin="15,15,15,0">
@@ -331,47 +334,55 @@
                             </Rectangle>
                         </StackPanel>
                     </Page>
-                    <Page ux:Name="Leaderboard" Background="#800000">
+                    <Page ux:Name="Leaderboard" Background="#fff">
                         <WhileActive Threshold="0.5">
                             <Set shrinkIndicatorWidth.Value="true" />
-                            <Set indicatorColorAttractor.Value="#D3D3D3" />
+                            <Set indicatorColorAttractor.Value="#67c26b" />
                         </WhileActive>
                         <ActivatingAnimation>
                             <Change h3.Opacity="1" />
                             <Change col3.Width="2" />
                             <Change c3.Color="White" />
                         </ActivatingAnimation>
+                        <Rectangle Alignment="Top" Color="#388E3C" Margin="0,130,0,0" Height="50" CornerRadius="0,0,5,5">
+                            <Text Value="trophy" Font="FontAwesome" Margin="15,10,0,0" Alignment="Left" Color="#fff" FontSize="30"/>
+                            <Text Color="#FFF" FontSize="15" Margin="60,0,0,10" Font="Bold" Alignment="CenterLeft">Leaderboard</Text>
+                            <Text Color="#FFF" FontSize="10" Margin="60,20,0,0" Alignment="CenterLeft">Top Scores</Text>
+                        </Rectangle>
                         <ScrollView AllowedScrollDirections="Vertical">
-                            <StackPanel>
-                                <Panel Alignment="Top" Background="#DC4353" Margin="0,130,0,0">
-                                    <Image File="../Assets/leaderboard.jpg" StretchMode="UniformToFill" Size="200" Alignment="Right" />
-                                    <Text Color="#FFF" FontSize="30" Margin="5,0" Font="Bold" Alignment="CenterLeft">Leaderboard</Text>
-                                </Panel>
+                            <StackPanel Margin="0,180,0,-130">
                                 <Each Items="{leaderboarddata}">
-                                    <DockPanel Margin="10,0,0,50" ux:Name="Scores">
-                                        <WhileString Value="{image.user_avatar}" Equals="https://bhfiles.storage.googleapis.com/" Invert="true">
-                                            <Circle Dock="Left" Width="45" Height="45">
-                                                <ImageFill Url="{image.user_avatar}" WrapMode="ClampToEdge" />
+                                    <Rectangle Color="#fff">
+                                        <DockPanel Margin="10,0,0,0" ux:Name="Scores">
+                                            <Circle Alignment="Left" Width="15" Height="15" Margin="-10,30,0,0" Color="#388E3C">
+                                                <Text Value="{rank}" Alignment="Center" TextColor="#fff" FontSize="8"/>
                                             </Circle>
-                                        </WhileString>
-                                        <WhileString Value="{image.user_avatar}" Equals="https://bhfiles.storage.googleapis.com/">
-                                            <Circle Dock="Left" Width="45" Height="45">
-                                                <ImageFill File="../Assets/user_avatar.jpg" WrapMode="ClampToEdge" />
-                                            </Circle>
-                                        </WhileString>
-                                        <DockPanel Margin="10,4,10,0">
-                                            <StackPanel Dock="Top" Orientation="Horizontal">
-                                                <Name Value="{User}" Font="RobotoMedium" TextAlignment="Left" Alignment="Default" />
-                                            </StackPanel>
-                                            <StackPanel Dock="Bottom" Orientation="Horizontal">
-                                                <SubText Value="Title = {title_type.title}" TextColor="#F2F3FF" />
-                                                <VerticalBar />
-                                                <SubText Value="Points = {score.total_score}" />
-                                                <VerticalBar />
-                                                <SubText Value="Rank = {rank}" />
-                                            </StackPanel>
+                                            <WhileString Value="{image.user_avatar}" Equals="https://bhfiles.storage.googleapis.com/" Invert="true">
+                                                <Circle Dock="Left" Width="45" Height="45" Margin="0,0,0,0">
+                                                    <ImageFill Url="{image.user_avatar}" WrapMode="ClampToEdge" />
+                                                </Circle>
+                                            </WhileString>
+                                            <WhileString Value="{image.user_avatar}" Equals="https://bhfiles.storage.googleapis.com/">
+                                                <Circle Dock="Left" Width="45" Height="45" Margin="0,0,0,0">
+                                                    <ImageFill File="../Assets/user_avatar.jpg" WrapMode="ClampToEdge" />
+                                                </Circle>
+                                            </WhileString>
+                                            <DockPanel Margin="10,4,10,0">
+                                                <StackPanel Dock="Top" Orientation="Horizontal" Margin="0,10,0,0">
+                                                    <Name Value="{User}" Font="RobotoMedium" TextAlignment="Left" Alignment="Default" />
+                                                </StackPanel>
+                                                <StackPanel Dock="Bottom" Orientation="Horizontal" Alignment="Right">
+                                                    <SubText Value="{title_type.title}"  Margin="50,0,20,0"/>
+                                                    <SubText Value="{score.total_score}" Margin="50,0,20,0"/>
+                                                </StackPanel>
+                                                <StackPanel Dock="Bottom" Orientation="Horizontal" Alignment="Right">
+                                                    <SubText Value="Title"  Font="Bold" Margin="50,0,20,0"/>
+                                                    <SubText Value="Points" Font="Bold" Margin="36,0,20,0"/>
+                                                </StackPanel>
+                                            </DockPanel>
                                         </DockPanel>
-                                    </DockPanel>
+                                    </Rectangle>
+                                    <Panel Background="#d3d3d3" Height="1" />
                                 </Each>
                             </StackPanel>
                         </ScrollView>
@@ -379,7 +390,7 @@
                     <Page ux:Name="Scoreboard" Background="#FFFF00">
                         <WhileActive Threshold="0.5">
                             <Set shrinkIndicatorWidth.Value="false" />
-                            <Set indicatorColorAttractor.Value="#D3D3D3" />
+                            <Set indicatorColorAttractor.Value="#67c26b" />
                         </WhileActive>
                         <ActivatingAnimation Scale="0.333">
                             <Move Target="indicator" X="1" RelativeTo="PositionOffset" RelativeNode="p4" />
@@ -409,67 +420,65 @@
             </Page>
             <Page ux:Name="Squish">
             </Page>
-            <Page ux:Name="User" Background="#69359c">
+            <Page ux:Name="User" Background="#67c26b">
                 <StateGroup ux:Name="UserState" Active="{loginstate}" >
                     <State  ux:Name="loginpage">
-                <Panel IsEnabled="True">
-                     
-                    <Panel Margin="50" >
-                    <Panel Row="2" Width="350" Height="60" Alignment="Center" Margin="0,350,0,100">
-                        <Text Value="{loginerror}" Color="#ff0000" Margin="40,-30,0,0"/>
-                        <Text ux:Name="text" Alignment="Center" Value="Log in" FontSize="18" Color="#fff" />
-                        <Panel ux:Name="loadingCirclePanel">
-                            <Circle ux:Name="loadingCircle" Width="70%" Height="70%" Opacity="0" StartAngleDegrees="0" LengthAngleDegrees="90">
-                                <Stroke Width="1" Brush="#fff" />
-                            </Circle>
+                        <Panel IsEnabled="True">
+                            <Panel Margin="50" >
+                                <Panel Row="2" Width="350" Height="60" Alignment="Center" Margin="0,350,0,100">
+                                    <Text Value="{loginerror}" Color="#ff0000" Margin="40,-30,0,0"/>
+                                    <Text ux:Name="text" Alignment="Center" Value="Log in" FontSize="18" Color="#fff" />
+                                    <Panel ux:Name="loadingCirclePanel">
+                                        <Circle ux:Name="loadingCircle" Width="70%" Height="70%" Opacity="0" StartAngleDegrees="0" LengthAngleDegrees="90">
+                                            <Stroke Width="1" Brush="#fff" />
+                                        </Circle>
+                                    </Panel>
+                                    <Clicked>
+                                        <Toggle Target="loading" />
+                                    </Clicked>
+                                    <Rectangle ux:Name="rectNormalScale" CornerRadius="30" Color="#388E3C" Width="300" Height="60" />
+                                    <Circle ux:Name="loadingButton" Opacity="0" Alignment="Center" Layer="Background" Width="240" Height="240" Color="#388E3C">
+                                        <Scaling Factor="0.25" />
+                                    </Circle>
+                                </Panel>
+                                <Panel Row="2" Width="350" Height="60" Alignment="Center" Margin="0,400,0,0">
+                                    <Text Alignment="Center" Value="Sign Up" FontSize="18" Color="#fff" />
+                                    <Rectangle  CornerRadius="30" Color="#388E3C" Width="300" Height="60" />
+                                    <Circle  Opacity="0" Alignment="Center" Layer="Background" Width="240" Height="240" Color="#388E3C">
+                                        <Scaling Factor="0.25" />
+                                    </Circle>
+                                </Panel>
+                                <WhileTrue ux:Name="loading">
+                                    <Callback Handler="{login}" />
+                                    <Change loadCircle.Value="{loading}" DelayBack="0" />
+                                </WhileTrue>
+                                <WhileTrue ux:Name="loadCircle">
+                                    <Change text.Opacity="0" Duration="0.2" DurationBack="0" />
+                                    <Change loadingCircle.Opacity="1" Duration="0.3" Delay="0.2" DelayBack="0" DurationBack="0" />
+                                    <Spin Target="loadingCircle" Frequency="2" />
+                                    <Cycle Target="loadingCircle.LengthAngleDegrees" Low="30" High="300" Frequency="0.7" />
+                                </WhileTrue>
+                                <WhileTrue Value="{loginflag}">
+                                    <Set UserState.Active="loggedin"/>
+                                </WhileTrue>
+                                <Grid ux:Name="loginArea" Row="1" Padding="0,20" RowCount="2" Columns="auto,1*" Height="160" MaxWidth="400">
+                                    <Image Row="0" Column="0" File="../Assets/user_icon.png" Width="20" Height="20" Margin="10,0,30,0" Alignment="Left" />
+                                    <TextInput Row="0" Column="1" Value="{username}" PlaceholderText="Username" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" />
+                                    <Rectangle Row="0" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" />
+                                    <Image Row="1" Column="0" File="../Assets/password_icon.png" Width="20" Height="20" Margin="10,0,30,0" Alignment="Left" />
+                                    <TextInput ux:Name="Pass" Row="1" Column="1" Value="{password}" PlaceholderText="Password" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" IsPassword="true" />
+                                    <Rectangle Row="1" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" />
+                                </Grid>
+                            </Panel>
                         </Panel>
-                        <Clicked>
-                            <Toggle Target="loading" />
-                        </Clicked>
-                        <Rectangle ux:Name="rectNormalScale" CornerRadius="30" Color="#FF3366" Width="300" Height="60" />
-                        <Circle ux:Name="loadingButton" Opacity="0" Alignment="Center" Layer="Background" Width="240" Height="240" Color="#FF3366">
-                            <Scaling Factor="0.25" />
-                        </Circle>
-                    </Panel>
-                    <Panel Row="2" Width="350" Height="60" Alignment="BottomCenter" Margin="0,50,0,50" Clicked="{nolink}">
-                    <Text Alignment="Center" Value="Sign Up" FontSize="18" Color="#fff" />
-                    <Rectangle CornerRadius="30" Color="#FF3366" Width="300" Height="60" />
-                </Panel>
-                    <WhileTrue ux:Name="loading">
-                        <Callback Handler="{login}" />
-                        <Change loadCircle.Value="{loading}" DelayBack="0" />
-                    </WhileTrue>
-                    <WhileTrue ux:Name="loadCircle">
-                        <Change text.Opacity="0" Duration="0.2" DurationBack="0" />
-                        <Change loadingCircle.Opacity="1" Duration="0.3" Delay="0.2" DelayBack="0" DurationBack="0" />
-                        <Spin Target="loadingCircle" Frequency="2" />
-                        <Cycle Target="loadingCircle.LengthAngleDegrees" Low="30" High="300" Frequency="0.7" />
-                    </WhileTrue>
-                    <WhileTrue Value="{loginflag}">
-                        <Set UserState.Active="loggedin"/>
-                    </WhileTrue>
-                    <Grid ux:Name="loginArea" Row="1" Padding="0,20" RowCount="2" Columns="auto,1*" Height="160" MaxWidth="400">
-                        <Image Row="0" Column="0" File="../Assets/user_icon.png" Width="20" Height="20" Margin="10,0,30,0" Alignment="Left" />
-                        <TextInput Row="0" Column="1" Value="{username}" PlaceholderText="Username" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" />
-                        <Rectangle Row="0" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" />
-                        <Image Row="1" Column="0" File="../Assets/password_icon.png" Width="20" Height="20" Margin="10,0,30,0" Alignment="Left" />
-                        <Button Alignment="CenterRight" >
-                            <Text ux:Name="ShowPassword" Value="eye" Color="#fff" Font="FontAwesome" Opacity="1"/>
-                            <WhilePressed>
-                                <Change ShowPassword.Opacity="0.3" />
-                                <Change Pass.IsPassword="false" />
-                            </WhilePressed>
-                        </Button>
-                        <TextInput ux:Name="Pass" Row="1" Column="1" Value="{password}" PlaceholderText="Password" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" IsPassword="true" />
-                        <Rectangle Row="1" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" />
-                    </Grid>
-                </Panel>
-            </Panel>
-            </State>
-            <State ux:Name="loggedin">
-                <Panel Height="30%" Alignment="Top" Margin="0,110,0,0">
-
-                     <WhileString Value="{image.user_avatar}" Equals="" >
+                    </State>
+                    <State ux:Name="loggedin">
+                        <ScrollView>
+                            <StackPanel Margin="0,50,0,50">
+                                <Rectangle CornerRadius="0,0,15,15" Height="300">
+                                    <SolidColor Color="#388E3C" />
+                                    <Rectangle Height="150" Alignment="Top" Margin="0,70,0,0"  CornerRadius="4,4,4,4">
+                                        <WhileString Value="{image.user_avatar}" Equals="" >
                                             <Circle Dock="Left">
                                                 <ImageFill Url="{userimage}" WrapMode="ClampToEdge" />
                                             </Circle>
@@ -479,31 +488,39 @@
                                                 <ImageFill File="../Assets/user_avatar.jpg" WrapMode="ClampToEdge" />
                                             </Circle>
                                         </WhileString>
-                                        <Text Alignment="Center" Value="{username}" FontSize="18" Color="#fff"  Margin="50,180,50,50" />
-                                    <StackPanel Margin="50,300,50,50" Background="#DC4353" Height="126">
-                                        
-                                        <Panel Background="#fff" Height="1" />
+                                        <Text Alignment="Center" Value="{username}" FontSize="40" Color="#fff"  Margin="50,150,50,50" />
+                                    </Rectangle>
+                                </Rectangle>
+                                <StackPanel Margin="0,20,0,0">
+                                    <Rectangle Background="#67c26b">
+                                        <Stroke Width="1" Color="#388E3C"/>
                                         <Text Alignment="CenterLeft" Value="Title : {usertitle}" FontSize="18" Color="#fff" Margin="50,20,0,20"/>
-                                         <Panel Background="#fff" Height="1" />
+                                    </Rectangle>
+                                    <Rectangle Background="#67c26b">
+                                        <Stroke Width="1" Color="#388E3C"/>
                                         <WhileString Value="{userwinning}" Equals="">
                                             <Text Alignment="CenterLeft" Value="Winngings : 0.00" FontSize="18" Color="#fff" Margin="50,20,0,20"/>
                                         </WhileString>
-                                         <WhileString Value="{userwinning}" Equals="" Invert="true">
-                                        <Text Alignment="CenterLeft" Value="Winngings : {userwinning}" FontSize="18" Color="#fff" Margin="50,0,0,30"/>
-                                    </WhileString>
-                                        <Panel Background="#fff" Height="1" />
-                                    </StackPanel>
-
-                </Panel>
-                <Panel Row="2" Width="350" Height="60" Alignment="BottomCenter" Margin="0,50,0,100" Clicked="{logout}">
-                    <Text Alignment="Center" Value="Log Out" FontSize="18" Color="#fff" />
-                    <WhileFalse Value="{loginflag}">
-                        <Set UserState.Active="loginpage"/>
-                    </WhileFalse>
-                    <Rectangle CornerRadius="30" Color="#FF3366" Width="300" Height="60" />
-                </Panel>
-            </State>
-        </StateGroup>
+                                        <WhileString Value="{userwinning}" Equals="" Invert="true">
+                                            <Text Alignment="CenterLeft" Value="Winngings : {userwinning}" FontSize="18" Color="#fff" Margin="50,0,0,30"/>
+                                        </WhileString>
+                                    </Rectangle>
+                                    <Rectangle Background="#67c26b" Clicked="{UserIssue}">
+                                        <Stroke Width="1" Color="#388E3C"/>
+                                        <Text Alignment="CenterLeft" Value="Bugs Reported" FontSize="18" Color="#fff" Margin="50,20,0,20"/>
+                                    </Rectangle>
+                                </StackPanel>
+                                <Panel Row="2" Width="350" Height="60"  Clicked="{logout}" Alignment="Bottom" Margin="0,20,0,0">
+                                    <Text Alignment="Center" Value="Log Out"  FontSize="18" Color="#fff" />
+                                    <WhileFalse Value="{loginflag}">
+                                        <Set UserState.Active="loginpage"/>
+                                    </WhileFalse>
+                                    <Rectangle CornerRadius="30" Color="#388E3C" Width="300" Height="60" />
+                                </Panel>
+                            </StackPanel>
+                        </ScrollView>
+                    </State>
+                </StateGroup>
             </Page>
         </PageControl>
     </ClientPanel>

@@ -7,10 +7,10 @@
                 <SplashPage />
             </WhileString>
             <StackPanel>
-                <Text Value="Search Type : " Margin="0,75,150,0" Alignment="Center" Color="#fff"/>
+                <Text Value="Search Type  " Margin="0,75,150,0" Alignment="Center" Color="#fff"/>
                 <CycleButton Width="50%" Alignment="Top"  Modes="{modes}" CurrentMode="{currentMode}" Margin="100,-25,0,0"/>
             </StackPanel>
-            <Panel Height="120"  ux:Name="searchTab" Background="#DC4353" Alignment="Top">
+            <Panel Height="120"  ux:Name="searchTab" Background="#388E3C" Alignment="Top">
                 <Rectangle CornerRadius="4"  Width="80%" Height="40"  Alignment="TopCenter" Margin="0,15,5,0">
                     <SolidColor Color="#fff" />
                     <StatusBarBackground />
@@ -19,14 +19,14 @@
                             <Callback Handler="{back}" />
                         </Clicked>
                     </Text>
-                    <TextInput Row="0" Column="1" Value="{searchbox_field}" PlaceholderColor="#D3D3D3" TextColor="#000000" CaretColor="#fff" Width="85%" Margin="10,0" Alignment="Left "/>
+                    <TextInput Row="0" Column="1" Value="{searchbox_field}" PlaceholderColor="#67c26b" TextColor="#000000" CaretColor="#fff" Width="85%" Margin="10,0" Alignment="Left "/>
                 </Rectangle>
                 <Image File="../Assets/search.png" Margin="20,20,5,40" Alignment="TopRight" Size="30" Clicked="{search}">
                 </Image>
             </Panel>
         </NativeViewHost>
         <Panel ux:Name="contentPlaceholder" Margin="0,150,0,10" Height="85%"/>
-        <DockPanel Background="#D3D3D3">
+        <DockPanel Background="#67c26b">
             <Panel Alignment="BottomRight" Margin="10,50" Padding="10">
                 <Circle Layer="Background"  Color="#FFFB"/>
                 <Text Value="⬆" FontSize="45" Color="#000"/>
@@ -182,14 +182,14 @@
                 </WhileString>
                  <WhileString Value="{searchtype}" Equals="0">
                 <WhileString Value="{user}" Equals="False" Invert="True">
-                    <Text Value="{label} - Reported By - {user.username}" Color="#DC4353"/>
+                    <Text Value="{label} - Reported By - {user.username}" Color="#388E3C"/>
                 </WhileString>
                 <WhileString Value="{user}" Equals="False">
-                    <Text Value="{label} - Reported By - Anonymous" Color="#DC4353" />
+                    <Text Value="{label} - Reported By - Anonymous" Color="#388E3C" />
                 </WhileString>
             </WhileString>
              <WhileString Value="{searchtype}" Equals="1">
-                 <Text Value="{user.username}" Color="#DC4353" />
+                 <Text Value="{user.username}" Color="#388E3C" />
             </WhileString>
             </StackPanel>
             <Rectangle Layer="Background" Color="#fff" CornerRadius="2" Margin="15,15,15,0">

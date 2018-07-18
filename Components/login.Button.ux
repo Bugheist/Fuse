@@ -6,7 +6,7 @@
 	
 	</Rectangle>
 
-	<Text Value="{ReadProperty Text}" Color="#DC4353" FontSize="{ReadProperty FontSize}" TextAlignment="Center" />
+	<Text Value="{ReadProperty Text}" Color="#388E3C" FontSize="{ReadProperty FontSize}" TextAlignment="Center" />
 
 	<WhilePressed>
 		<Scale Factor=".95" Duration=".08" Easing="QuadraticOut" />

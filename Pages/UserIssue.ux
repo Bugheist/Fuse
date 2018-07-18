@@ -1,0 +1,177 @@
+<Page ux:Class="UserIssue">
+    <Router ux:Dependency="router" />
+    <Panel Height="70" ux:Name="iconTab" Background="#FFFFFF" Alignment="Top">
+        <Image File="../Assets/logo.png" Margin="20,18,0,25" Alignment="TopLeft" />
+        <Text Margin="18,46,0,0" Opacity="1" TextAlignment="Center" FontSize="12" Alignment="TopLeft" TextColor="#000000">Report Issues, Win Prizes</Text>
+        <WhileFalse ux:Name="isEnabled">
+            <Change searchTab.IsEnabled="False" />
+        </WhileFalse>
+        <WhileTrue ux:Name="isnotEnabled">
+            <Change searchTab.IsEnabled="True" />
+        </WhileTrue>
+        <WhileTrue Value="{loginflag}">
+            <WhileString Value="{image.user_avatar}" Equals="" >
+                <Circle  Margin="120,15,50,40" Alignment="TopRight"  Width="45" Height="45">
+                    <ImageFill Url="{userimage}" WrapMode="ClampToEdge" />
+                    <Clicked>
+                        <Callback Handler="{back}" />
+                    </Clicked>
+                </Circle>
+            </WhileString>
+            <WhileString Value="{image.user_avatar}" Equals="" >
+                <Circle  Margin="120,15,50,40" Alignment="TopRight"  Width="45" Height="45">
+                    <ImageFill File="../Assets/user_avatar.jpg" WrapMode="ClampToEdge" />
+                    <Clicked>
+                        <Callback Handler="{back}" />
+                    </Clicked>
+                </Circle>
+            </WhileString>
+        </WhileTrue>
+        <Image File="../Assets/search.png" Margin="20,20,5,40" Alignment="TopRight" Size="30">
+            <Clicked>
+                <Hide TargetNode="iconTab" />
+                <Show TargetNode="searchTab" />
+                <Toggle Target="isEnabled" />
+            </Clicked>
+        </Image>
+    </Panel>
+    <Panel Height="70" ux:Name="searchTab" Background="#388E3C" Alignment="Top" Visibility="Hidden" IsEnabled="true">
+        <Rectangle CornerRadius="4" Width="80%" Height="40" Alignment="Center" Margin="0,0,5,0">
+            <SolidColor Color="#fff" />
+            <StatusBarBackground />
+            <Text Value="arrow-left" Font="FontAwesome" Margin="-30,10,0,0" Alignment="Left" Color="#fff">
+                <Clicked>
+                    <Show TargetNode="iconTab" />
+                    <Hide TargetNode="searchTab" />
+                    <Toggle Target="isnotEnabled" />
+                </Clicked>
+            </Text>
+            <TextInput Row="0" Column="1" Value="{searchbox_field}" PlaceholderColor="#67c26b" TextColor="#000000" CaretColor="#fff" Width="85%" Margin="10,0" Alignment="Left " />
+        </Rectangle>
+        <OnBackButton>
+            <Show TargetNode="iconTab" />
+            <Hide TargetNode="searchTab" />
+            <Toggle Target="isnotEnabled" />
+        </OnBackButton>
+        <Image File="../Assets/search.png" Margin="20,20,5,40" Alignment="TopRight" Size="30" Clicked="{SearchPage}">
+        </Image>
+    </Panel>
+    <Panel>
+        <Panel Height="50" Background="#388E3C" Alignment="Top" Margin="0,70,0,0">
+            <Text Value="arrow-left" Font="FontAwesome" Alignment="Left" Color="#fff" Margin="20,15,0,0">
+                <Clicked>
+                    <Callback Handler="{back}" />
+                </Clicked>
+            </Text>
+        </Panel>
+        <Panel ux:Name="contentPlaceholder" Margin="0,110,0,10" />
+        <DockPanel Background="#fff">
+            <Panel Alignment="BottomRight" Margin="10,50" Padding="10">
+                <Circle Layer="Background" Color="#FFFB" />
+                <Text Value="⬆" FontSize="45" Color="#000" />
+                <Clicked>
+                    <ScrollTo Target="mainScrollView" Position="0,0" />
+                </Clicked>
+            </Panel>
+            <ScrollView ux:Name="mainScrollView" ClipToBounds="false" LayoutMode="PreserveVisual" Margin="0,150,0,50">
+                <WhileScrollable ScrollDirections="Down" Invert="true">
+                    <Callback Handler="{fetchUserdData}" />
+                </WhileScrollable>
+                <StackPanel Margin="0,0,0,0">
+                    <Selection MinCount="0" MaxCount="1" />
+                    <Each Items="{user_data}">
+                        <UserIssueCard layoutTarget="contentPlaceholder">
+                            <Selectable Value="{id}" />
+                            <WhileSelected>
+                                <Change mainScrollView.UserScroll="false" DelayBack="0" />
+                            </WhileSelected>
+                        </UserIssueCard>
+                    </Each>
+                </StackPanel>
+            </ScrollView>
+            <BottomBarBackground Dock="Bottom" />
+        </DockPanel>
+        <StackPanel ux:Class="UserIssueCard" ImageHeight="250">
+            <float ux:Property="ImageHeight" />
+            <Panel ux:Dependency="layoutTarget" />
+            <OnBackButton>
+                <ToggleSelection Mode="RemoveOnly" />
+            </OnBackButton>
+            <WhileSelected>
+                <Change imageAndContent.LayoutMaster="layoutTarget" DelayBack="0" Delay="0" />
+                <BringToFront />
+                <Change image.CornerRadius="0" Duration="0.1" DelayBack="0" />
+                <Change image.Margin="0" Duration="0.25" Delay="0" DelayBack="0" Easing="CubicInOut" />
+            </WhileSelected>
+            <WhileSelected Invert="true">
+                <Change contentScrollView.Opacity="0.4" Duration="0.3" DelayBack="0" />
+                <Change content.Opacity="0.5" Duration="0.5" DelayBack="0" />
+                <Move Target="content" Y="30" Duration="0.7" DelayBack="0" Delay="0" Easing="QuadraticIn" />
+                <Change detailNavigationBar.Opacity="0" Duration="0.2" Delay="0" />
+                <Change detailNavigationBar.HitTestMode="None" />
+            </WhileSelected>
+            <Panel ux:Name="contentLimitPanel" Height="{ReadProperty ImageHeight}">
+                <DockPanel ux:Name="imageAndContent" ClipToBounds="true" HitTestMode="LocalBoundsAndChildren">
+                    <LayoutAnimation>
+                        <Move X="1" RelativeTo="WorldPositionChange" DelayBack="0" Duration="0.2" Easing="QuadraticInOut" />
+                        <Move Y="1" RelativeTo="WorldPositionChange" DelayBack="0" Duration="0.2" Easing="SinusoidalIn" />
+                        <Resize X="1" Y="1" RelativeTo="SizeChange" DelayBack="0" Duration="0.25" Easing="QuadraticIn" />
+                    </LayoutAnimation>
+                    <Panel Dock="Top" Height="{ReadProperty ImageHeight}">
+                        <StackPanel ux:Name="detailNavigationBar" Alignment="Top">
+                            <StatusBarBackground />
+                            <BackButton Alignment="Left">
+                                <Clicked>
+                                    <ToggleSelection Mode="RemoveOnly" />
+                                </Clicked>
+                            </BackButton>
+                        </StackPanel>
+                        <Panel>
+                            <Clicked>
+                                <ToggleSelection Mode="AddOnly" />
+                            </Clicked>
+                            <StackPanel Margin="30,15,30,15" Alignment="BottomLeft">
+                                <Text Value="Added On : {created}" Color="#fff" FontSize="10" />
+                            </StackPanel>
+                            <Rectangle ux:Name="image" Layer="Background" CornerRadius="2,2,0,0" Width="100%" Margin="15,0,15,0">
+                                <SolidColor Color="#444" />
+                                <ImageFill Url="{screenshot}" StretchMode="UniformToFill" WrapMode="ClampToEdge" />
+                                <LinearGradient>
+                                    <GradientStop Color="0,0,0, 0.1" Offset="0" />
+                                    <GradientStop Color="0,0,0, 0.92" Offset="1" />
+                                </LinearGradient>
+                            </Rectangle>
+                        </Panel>
+                    </Panel>
+                    <ScrollView ux:Name="contentScrollView" Background="#fff">
+                        <StackPanel ux:Name="content" Margin="56,20,20,20" ItemSpacing="10">
+                            <SmallHeaderText>URL</SmallHeaderText>
+                            <BodyText Value="{url}" />
+                            <SmallHeaderText>Added By</SmallHeaderText>
+                            <WhileString Value="{user}" Equals="False" Invert="True">
+                                <BodyText Value="{user.username}" />
+                            </WhileString>
+                            <WhileString Value="{user}" Equals="False">
+                                <BodyText Value="Anonymous" />
+                            </WhileString>
+                            <SmallHeaderText>Description</SmallHeaderText>
+                            <BodyText Value="{description}" />
+                            <SmallHeaderText>Status</SmallHeaderText>
+                            <BodyText Value="{status}" />
+                            <optionbutton labelbutton="Delete Issue" CornerRadius="8,8,8,8" Margin="0,10,0,10" Clicked="{deleteIssue}" />
+                           	<WhileString Value="{status}" Equals="open">
+                            <optionbutton labelbutton="Close Issue" CornerRadius="8,8,8,8" Margin="0,10,0,10" Clicked="{updateIssue}" />
+                        </WhileString>
+                        <WhileString Value="{status}" Equals="closed">
+                            <optionbutton labelbutton="Open Issue" CornerRadius="8,8,8,8" Margin="0,10,0,10" Clicked="{updateIssue}" />
+                        </WhileString>
+                        </StackPanel>
+                    </ScrollView>
+                </DockPanel>
+            </Panel>
+            <Rectangle Layer="Background" Color="#fff" CornerRadius="2" Margin="15,15,15,0">
+                <Shadow Size="2" Distance="2" Color="#0003" />
+            </Rectangle>
+        </StackPanel>
+    </Panel>
+</Page>
