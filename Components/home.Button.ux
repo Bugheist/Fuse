@@ -2,7 +2,7 @@
 	<string ux:Property="Text" />
 	<float ux:Property="FontSize" />
 
-	<Rectangle Layer="Background" Color="#D3D3D3" CornerRadius="0" >
+	<Rectangle Layer="Background" Color="#388E3C" CornerRadius="0" >
 	</Rectangle>
 
 	<blt.Text Value="{ReadProperty Text}" FontSize="10" TextAlignment="Center" />

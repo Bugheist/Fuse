@@ -10,6 +10,7 @@ var searchflag = Observable(false);
 var paginationOffset = 1;
 var userpaginationOffset = 1;
 var search_data = exports.search_data = Observable("");
+var user_data = exports.user_data = Observable("");
 var leaderboarddata = exports.leaderboarddata = Observable("");
 var api_url = "https://www.bugheist.com/api/v1/";
 var FileSystem = require("FuseJS/FileSystem");
@@ -17,7 +18,8 @@ var Storage = require("FuseJS/Storage");
 var first_launch = FileSystem.dataDirectory + "/" + "first_launch_data.json";
 first_launch_flag = Observable(true);
 checkfirst_launch();
-var screenshotupload =  Observable("Upload");
+var screenshotupload = Observable("Upload");
+var screenshotname = Observable("");
 var cameraRoll = require("FuseJS/CameraRoll");
 var username = Observable("");
 var password = Observable("");
@@ -36,94 +38,103 @@ var usertitle = Observable("");
 var userwinning = Observable("");
 var userupvoted = Observable("");
 var loginstate = Observable("");
+var dom_check = Observable("");
+var user_issuepage = Observable("1");
 var Camera = require('FuseJS/Camera');
 var ImageTools = require('FuseJS/ImageTools');
 var web_url = "https://www.bugheist.com/";
+
 function logout() {
     loginstate.value = "loginpage";
-    loginflag.value  = false;
+    loginflag.value = false;
     usertoken.value = "";
     logintab.value = "Login";
-    Storage.write(tokenfile,"");
+    Storage.write(tokenfile, "");
 }
-function fetch_user(appendData){
+
+function fetch_user(appendData) {
     urlprofile = api_url + 'profile/?search=' + appendData;
     fetch(urlprofile, {
-                method: 'GET',
-                 }).then(function(response) {
-                    return response.json();
-                }).then(function(responseObject) {
-                    user.replaceAll(responseObject.results);
-                    for(i in user._values){
-                        if(user._values[i].user.id == user_id.value){
-                             if (user._values[i].title == 0)
-                               user._values[i].title = 'Null';
+        method: 'GET',
+    }).then(function(response) {
+        return response.json();
+    }).then(function(responseObject) {
+        user.replaceAll(responseObject.results);
+        for (i in user._values) {
+            if (user._values[i].user.id == user_id.value) {
+                if (user._values[i].title == 0)
+                    user._values[i].title = 'Null';
                 else if (user._values[i].title == 1)
                     user._values[i].title = "Bronze";
                 else if (user._values[i].title == 2)
                     user._values[i].title = "Silver";
                 else if (user._values[i].title == 3)
-                   user._values[i].title = "Gold";
-                            break;
-                        }
-                    }
-                    username.value = user._values[i].user.username;
-                    userimage.value = user._values[i].user_avatar;
-                    userfollows.value = user._values[i].follows;
-                    usersaved.value = user._values[i].issue_saved;
-                    usertitle.value = user._values[i].title;
-                    userwinning.value = user._values[i].winnings;
-                    userupvoted.value = user._values[i].issue_upvoted;
-                    var storeObject = {
-                        token: usertoken.value,
-                        id: user_id.value
-                    };
-                    Storage.write(tokenfile, JSON.stringify(storeObject));
-                });
+                    user._values[i].title = "Gold";
+                break;
+            }
+        }
+        username.value = user._values[i].user.username;
+        userimage.value = user._values[i].user_avatar;
+        userfollows.value = user._values[i].follows;
+        usersaved.value = user._values[i].issue_saved;
+        usertitle.value = user._values[i].title;
+        userwinning.value = user._values[i].winnings;
+        userupvoted.value = user._values[i].issue_upvoted;
+        var storeObject = {
+            token: usertoken.value,
+            id: user_id.value
+        };
+        Storage.write(tokenfile, JSON.stringify(storeObject));
+    });
 }
+
 function login() {
     loading.value = true;
-    if(username.value=="" && password.value==""){
-        loginerror.value = "Please Enter Username and Password" ;
+    if (username.value == "" && password.value == "") {
+        loginerror.value = "Please Enter Username and Password";
+        return;
+    } else if (username.value == "") {
+        loginerror.value = "Please Enter Username";
+        return;
+    } else if (password.value == "") {
+        loginerror.value = "Please Enter Password";
         return;
     }
-    else if(username.value=="")    {
-        loginerror.value = "Please Enter Username" ;
-        return;
-    }
-    else if(password.value==""){
-        loginerror.value = "Please Enter Password" ;
-        return;
-    }
-    var obj = {"username":username.value, "password":password.value};
+    var obj = {
+        "username": username.value,
+        "password": password.value
+    };
     loginurl = "https://www.bugheist.com/authenticate/";
     fetch(loginurl, {
         method: 'POST',
-        headers: { "Content-type": "application/json"},
+        headers: {
+            "Content-type": "application/json"
+        },
         body: JSON.stringify(obj)
     }).then(function(response) {
-    status = response.status;  // Get the HTTP status code
-    response_ok = response.ok; // Is response.status in the 200-range?
-    return response.json();    // This returns a promise
+        status = response.status; // Get the HTTP status code
+        response_ok = response.ok; // Is response.status in the 200-range?
+        return response.json(); // This returns a promise
     }).then(function(responseObject) {
-        if(responseObject.token == null){
-        loginflag.value  = false;
-        loginerror.value = "Incorrect Username & Password" ;
-        }
-        else{
+        if (responseObject.token == null) {
+            loginflag.value = false;
+            loginerror.value = "Incorrect Username & Password";
+        } else {
             loginstate.value = "loggedin";
             logintab.value = "Profile";
             loginerror.value = "";
             loginflag.value = true;
             usertoken.value = responseObject.token;
             user_id.value = responseObject.id;
+            userissues(user_id.value);
             fetch_user(user_id.value);
-            }
-    }); 
+        }
+    });
 }
-    
+
 leaderboard();
 searchIssues();
+
 function checkfirst_launch() {
     Storage.read(first_launch).then(function(content) {
         first_launch_flag.value = false;
@@ -139,28 +150,32 @@ function checkfirst_launch() {
 }
 var tokenfile = FileSystem.dataDirectory + "/" + "user_auth.json";
 checkuser();
-function checkuser(){
-Storage.read(tokenfile).then(function(content) {
+
+function checkuser() {
+    Storage.read(tokenfile).then(function(content) {
         var data = JSON.parse(content);
-        if(data.id != null)
-        logintab.value = "Profile";
-        loginflag.value = true;
-        usertoken.value = data.token;
-        user_id.value = data.id;
-        fetch_user(data.id);
-        loginstate.value = "loggedin";
+        if (data.id != null) {
+            logintab.value = "Profile";
+            loginflag.value = true;
+            usertoken.value = data.token;
+            user_id.value = data.id;
+            fetch_user(data.id);
+            loginstate.value = "loggedin";
+            userissues(user_id.value);
+        }
     }, function(error) {
-            loginstate.value = loginpage;
-});
+        loginstate.value = loginpage;
+    });
 }
 var a;
 var searchtype = Observable("0");
-function selectimage(){
+
+function selectimage() {
     cameraRoll.getImage()
-    .then(function(image) {
-        screenshotupload.value= image.path;
-    }, function(error) {
-    });
+        .then(function(image) {
+            screenshotupload.value = image.path;
+            screenshotname.value = image.name;
+        }, function(error) {});
 }
 
 function search() {
@@ -179,36 +194,36 @@ function search() {
         })
         .then(function(responseObject) {
             for (j in responseObject.results) {
-                if(currentMode.value!='1'){
-                responseObject.results[j].modified = responseObject.results[j].modified.slice(0, 10);
-                responseObject.results[j].created = responseObject.results[j].created.slice(0, 10);
-                if (responseObject.results[j].label == 0)
-                    responseObject.results[j].label = "General";
-                else if (responseObject.results[j].label == 1)
-                    responseObject.results[j].label = "Number Error";
-                else if (responseObject.results[j].label == 2)
-                    responseObject.results[j].label = "Functional";
-                else if (responseObject.results[j].label == 3)
-                    responseObject.results[j].label = "Performance";
-                else if (responseObject.results[j].label == 4)
-                    responseObject.results[j].label = "Security";
-                else if (responseObject.results[j].label == 5)
-                    responseObject.results[j].label = "Typo";
-                else
-                    responseObject.results[j].label = "Design";
-                responseObject.results[j].created = responseObject.results[j].created.slice(0, 10);
+                if (currentMode.value != '1') {
+                    responseObject.results[j].modified = responseObject.results[j].modified.slice(0, 10);
+                    responseObject.results[j].created = responseObject.results[j].created.slice(0, 10);
+                    if (responseObject.results[j].label == 0)
+                        responseObject.results[j].label = "General";
+                    else if (responseObject.results[j].label == 1)
+                        responseObject.results[j].label = "Number Error";
+                    else if (responseObject.results[j].label == 2)
+                        responseObject.results[j].label = "Functional";
+                    else if (responseObject.results[j].label == 3)
+                        responseObject.results[j].label = "Performance";
+                    else if (responseObject.results[j].label == 4)
+                        responseObject.results[j].label = "Security";
+                    else if (responseObject.results[j].label == 5)
+                        responseObject.results[j].label = "Typo";
+                    else
+                        responseObject.results[j].label = "Design";
+                    responseObject.results[j].created = responseObject.results[j].created.slice(0, 10);
+                }
+                if (currentMode.value == '1') {
+                    if (responseObject.results[j].title == 0)
+                        responseObject.results[j].title = 'Null';
+                    else if (responseObject.results[j].title == 1)
+                        responseObject.results[j].title = "Bronze";
+                    else if (responseObject.results[j].title == 2)
+                        responseObject.results[j].title = "Silver";
+                    else if (responseObject.results[j].title == 3)
+                        responseObject.results[j].title = "Gold";
+                }
             }
-            if(currentMode.value == '1'){
-                if (responseObject.results[j].title == 0)
-                   responseObject.results[j].title = 'Null';
-                else if (responseObject.results[j].title == 1)
-                   responseObject.results[j].title = "Bronze";
-                else if (responseObject.results[j].title == 2)
-                    responseObject.results[j].title = "Silver";
-                else if (responseObject.results[j].title == 3)
-                    responseObject.results[j].title = "Gold";
-            }
-}   
             search_data.replaceAll(responseObject.results);
         });
     searchflag.value = true;
@@ -216,13 +231,14 @@ function search() {
 }
 
 function leaderboard() {
-    urlleaderboard = api_url + 'userscore';
+    urlleaderboard = api_url + 'userscore/';
     fetch(urlleaderboard, {
         method: 'GET',
     }).then(function(response) {
         return response.json();
     }).then(function(responseObject) {
         for (i in responseObject) {
+            responseObject[i].User = responseObject[i].User.toUpperCase();
             if (responseObject[i].title_type.title == 0)
                 responseObject[i].title_type.title = null;
             else if (responseObject[i].title_type.title == 1)
@@ -236,6 +252,64 @@ function leaderboard() {
         }
         leaderboarddata.replaceAll(responseObject);
     })
+}
+scoreboard();
+
+function scoreboard() {
+    urlleaderboard = api_url + 'scoreboard/';
+    fetch(urlleaderboard, {
+        method: 'GET',
+    }).then(function(response) {
+        return response.json();
+    }).then(function(responseObject) {
+        console.log("WORKING ON IT")
+    })
+}
+
+function deleteIssue(args) {
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function() {
+        if (this.readyState === 4) {
+            appendinguserData.value = false;
+            user_issuepage.value = 1;
+            userissues(user_id.value);
+        }
+    });
+    var data = "token=" + usertoken.value;
+    var url = api_url + "delete_issue/" + args.data.id + "/";
+    xhr.open("POST", url);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader("Cache-Control", "no-cache");
+    xhr.setRequestHeader("Postman-Token", "03cdb8c9-9614-4a23-a413-022dbfc1ca20");
+
+    xhr.send(data);
+}
+function updateIssue(args) {
+    var xhr = new XMLHttpRequest();
+    console.log(args.data.status)
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function() {
+        if (this.readyState === 4) {
+            appendinguserData.value = false;
+            user_issuepage.value = 1;
+            userissues(user_id.value);
+        }
+    });
+    if(args.data.status == "open")
+    var data = "token=" + usertoken.value + "&issue_pk=" + args.data.id + "&action=close";
+else
+    var data = "token=" + usertoken.value + "&issue_pk=" + args.data.id + "&action=open";     
+
+    var url = api_url + "issue/update/";
+    xhr.open("POST", url);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader("Cache-Control", "no-cache");
+    xhr.setRequestHeader("Postman-Token", "03cdb8c9-9614-4a23-a413-022dbfc1ca20");
+
+    xhr.send(data);
 }
 
 function searchIssues(appendData) {
@@ -262,61 +336,61 @@ function searchIssues(appendData) {
             return response.json();
         })
         .then(function(responseObject) {
-    
-                for (j in responseObject.results) {
-                    responseObject.results[j].modified = responseObject.results[j].modified.slice(0, 10);
-                    responseObject.results[j].created = responseObject.results[j].created.slice(0, 10);
-                    if (responseObject.results[j].label == 0)
-                        responseObject.results[j].label = "General";
-                    else if (responseObject.results[j].label == 1)
-                        responseObject.results[j].label = "Number Error";
-                    else if (responseObject.results[j].label == 2)
-                        responseObject.results[j].label = "Functional";
-                    else if (responseObject.results[j].label == 3)
-                        responseObject.results[j].label = "Performance";
-                    else if (responseObject.results[j].label == 4)
-                        responseObject.results[j].label = "Security";
-                    else if (responseObject.results[j].label == 5)
-                        responseObject.results[j].label = "Typo";
-                    else
-                        responseObject.results[j].label = "Design";
-                    if (responseObject.results[j].user == null)
-                        responseObject.results[j].user = 'False';
-                }
-                 if (appendingData.value == true) {
-                    issue_data.addAll(responseObject.results);
-                    appendingData.value = true;
-                } 
-                else{   
-                    issue_data.replaceAll(responseObject.results);
-                    appendingData.value = true;
-                }
 
-                    if (responseObject.next == null){
-                        appendingData.value = false;
-                        return;
-                    }
-                loading_visible.value = false;
-                loadingNewFeed.value = false;
-                paginationOffset++;
-            });
+            for (j in responseObject.results) {
+                responseObject.results[j].modified = responseObject.results[j].modified.slice(0, 10);
+                responseObject.results[j].created = responseObject.results[j].created.slice(0, 10);
+                if (responseObject.results[j].label == 0)
+                    responseObject.results[j].label = "General";
+                else if (responseObject.results[j].label == 1)
+                    responseObject.results[j].label = "Number Error";
+                else if (responseObject.results[j].label == 2)
+                    responseObject.results[j].label = "Functional";
+                else if (responseObject.results[j].label == 3)
+                    responseObject.results[j].label = "Performance";
+                else if (responseObject.results[j].label == 4)
+                    responseObject.results[j].label = "Security";
+                else if (responseObject.results[j].label == 5)
+                    responseObject.results[j].label = "Typo";
+                else
+                    responseObject.results[j].label = "Design";
+                if (responseObject.results[j].user == null)
+                    responseObject.results[j].user = 'False';
+            }
+            if (appendingData.value == true) {
+                issue_data.addAll(responseObject.results);
+                appendingData.value = true;
+            } else {
+                issue_data.replaceAll(responseObject.results);
+                appendingData.value = true;
+            }
+
+            if (responseObject.next == null) {
+                appendingData.value = false;
+                return;
+            }
+            loading_visible.value = false;
+            loadingNewFeed.value = false;
+            paginationOffset++;
+        });
 }
 count();
 var open = Observable("0");
 var closed = Observable("0");
-function count() {
-        url = api_url + "count/";
-        fetch(url, {
-                method: 'GET',
 
-            }).then(function(response) {
-                return response.json();
-            })
-            .then(function(responseObject) {
-                open.value = responseObject.open;
-                closed.value = responseObject.closed;
-            });
-    }
+function count() {
+    url = api_url + "count/";
+    fetch(url, {
+            method: 'GET',
+
+        }).then(function(response) {
+            return response.json();
+        })
+        .then(function(responseObject) {
+            open.value = responseObject.open;
+            closed.value = responseObject.closed;
+        });
+}
 
 var Issuesite = Observable("");
 var Issuedesc = Observable("");
@@ -345,8 +419,76 @@ function saveIssuesite() {
     return;
 }
 
+function domaincheck() {
+    var obj = "dom_url=" + Issuesite.value;
+    var url = web_url + "domain_check/";
+    var domain_check = new XMLHttpRequest();
+    domain_check.open("POST", url, true);
+    domain_check.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    domain_check.onreadystatechange = function() { //Call a function when the state changes.
+        if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+
+            if ((JSON.parse(domain_check.responseText)).number == 3) {
+                dom_check.value = "Sweet! We haven't got any bug from this domain till now";
+            } else if ((JSON.parse(domain_check.responseText)).number == 2) {
+                dom_check.value = "Multiple bugs already exist on this domain, ensure you are not submitting a duplicate bug";
+            } else if ((JSON.parse(domain_check.responseText)).number == 1) {
+                dom_check.value = "A bug with same URL already exists";
+            }
+        }
+    }
+    domain_check.send(obj);
+
+}
+
+function userissues(appendData) {
+    var url = api_url + "userissues/?page=" + user_issuepage.value + "&search=" + appendData;
+    fetch(url, {
+            method: 'GET',
+
+        }).then(function(response) {
+            return response.json();
+        })
+        .then(function(responseObject) {
+
+            for (j in responseObject.results) {
+                responseObject.results[j].modified = responseObject.results[j].modified.slice(0, 10);
+                responseObject.results[j].created = responseObject.results[j].created.slice(0, 10);
+                if (responseObject.results[j].label == 0)
+                    responseObject.results[j].label = "General";
+                else if (responseObject.results[j].label == 1)
+                    responseObject.results[j].label = "Number Error";
+                else if (responseObject.results[j].label == 2)
+                    responseObject.results[j].label = "Functional";
+                else if (responseObject.results[j].label == 3)
+                    responseObject.results[j].label = "Performance";
+                else if (responseObject.results[j].label == 4)
+                    responseObject.results[j].label = "Security";
+                else if (responseObject.results[j].label == 5)
+                    responseObject.results[j].label = "Typo";
+                else
+                    responseObject.results[j].label = "Design";
+                if (responseObject.results[j].user == null)
+                    responseObject.results[j].user = 'False';
+            }
+            if (appendinguserData.value == true) {
+                user_data.addAll(responseObject.results);
+                appendinguserData.value = true;
+            } else {
+                user_data.replaceAll(responseObject.results);
+                appendinguserData.value = true;
+            }
+
+            if (responseObject.next == null) {
+                appendinguserData.value = false;
+                return;
+            }
+            user_issuepage.value++;
+        });
+}
+
 function reportIssue() {
-    
+
     if (Issuetype.value == "general") {
         Issuetype.value = 0;
     } else if (Issuetype.value == "numbererror") {
@@ -362,43 +504,48 @@ function reportIssue() {
     } else if (Issuetype.value == "design") {
         Issuetype.value = 6;
     }
-     if(screenshotupload.value != "Upload"){
-        if(usertoken.value=="")
-            console.log("NOT LOGIN")
-        else{
-        var obj = {"dom_url":Issuesite.value};
-        var url = web_url + "domain_check/" ;
-    fetch(url, {
-        method: 'POST',
-        headers: { "Content-type": "application/json"},
-        body: JSON.stringify(obj)
-    }).then(function(response) {
-        console.log(response)
-    });
-        var Base64 = require("FuseJS/Base64");
-        var arrayBuff = FileSystem.readBufferFromFileSync(screenshotupload.value);
-        var b64data = Base64.encodeBuffer(arrayBuff);
-        var arr = screenshotupload.value.split(".");      // Split the string using dot as separator
-        var imgtype = arr.pop();
-        var send_data = "url=" + Issuesite.value +"&description=" + Issuedesc.value +"&label=" + Issuetype.value +"&token=" + usertoken.value +"&file=" + b64data +"&type=" +imgtype;
-        var obj = {"url":Issuesite.value,"description":Issuedesc.value,"label":Issuetype.value ,"token":usertoken.value ,"file":b64data,"type":imgtype};
-        var xhr = new XMLHttpRequest();
-xhr.withCredentials = true;
+    if (screenshotupload.value != "Upload") {
+        if (usertoken.value == "")
+            dom_check.value = "You Are Not Logged in Yet";
+        else if (Issuetype.value == "" || Issuedesc.value == "" || Issuesite.value == "")
+            dom_check.value = "Check if all fields have been filled";
+        else {
+            var Base64 = require("FuseJS/Base64");
+            var arrayBuff = FileSystem.readBufferFromFileSync(screenshotupload.value);
+            var b64data = Base64.encodeBuffer(arrayBuff);
+            var arr = screenshotupload.value.split(".");
+            var imgtype = arr.pop();
+            var send_data = "url=" + Issuesite.value + "&description=" + Issuedesc.value + "&label=" + Issuetype.value + "&token=" + usertoken.value + "&file=" + b64data + "&type=" + imgtype;
+            var obj = {
+                "url": Issuesite.value,
+                "description": Issuedesc.value,
+                "label": Issuetype.value,
+                "token": usertoken.value,
+                "file": b64data,
+                "type": imgtype
+            };
+            var xhr = new XMLHttpRequest();
+            xhr.withCredentials = true;
 
-xhr.addEventListener("readystatechange", function () {
-  if (this.readyState === 4) {
-  }
-});
-        xhr.open("POST", "https://www.bugheist.com/api/v1/createissues/");
-xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-xhr.setRequestHeader("Cache-Control", "no-cache");
-xhr.setRequestHeader("Postman-Token", "03cdb8c9-9614-4a23-a413-022dbfc1ca20");
+            xhr.addEventListener("readystatechange", function() {
+                if (this.readyState === 4) {
+                    if ((xhr.responseText) == '"Created"')
+                        dom_check.value = "Issue Posted";
+                    Issuetype.value = "";
+                    Issuedesc.value = "";
+                    screenshotname.value = "";
+                    screenshotupload.value = "";
+                }
+            });
+            xhr.open("POST", "https://www.bugheist.com/api/v1/createissues/");
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("Cache-Control", "no-cache");
+            xhr.setRequestHeader("Postman-Token", "03cdb8c9-9614-4a23-a413-022dbfc1ca20");
 
-xhr.send(JSON.stringify(obj));
+            xhr.send(JSON.stringify(obj));
         }
-    }
-    else{
-        console.log("NO SCREENSHOT")
+    } else {
+        dom_check.value = "Check if all fields have been filled";
     }
 }
 
@@ -409,9 +556,11 @@ function back() {
 function SearchPage() {
     router.push("search");
 }
+
 function UserIssue() {
     router.push("userissue");
 }
+
 function HomePage() {
     first_launch_flag.value = false;
     var empty = new Object();
@@ -479,6 +628,10 @@ function mapOptions(opts) {
 };
 update();
 module.exports = {
+    updateIssue: updateIssue,
+    deleteIssue: deleteIssue,
+    dom_check: dom_check,
+    screenshotname: screenshotname,
     username: username,
     userimage: userimage,
     userfollows: userfollows,
@@ -533,8 +686,14 @@ module.exports = {
     closeDialog: closeDialog,
     reportIssue: reportIssue,
     loginstate: loginstate,
+    domaincheck: domaincheck,
+    userissues: userissues,
+    user_data: user_data,
     fetchAppendData: function() {
         searchIssues(true)
+    },
+    fetchUserData: function() {
+        userissues(true)
     },
     goBack: function() {
         router.goBack();

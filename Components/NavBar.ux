@@ -1,13 +1,13 @@
-<Rectangle ux:Class="navbar" HitTestMode="LocalBounds" Height="45" Background="#DC4353">
+<Rectangle ux:Class="navbar" HitTestMode="LocalBounds" Height="45" Background="#388E3C">
 	<string ux:Property="labelbutton" />
 	<string ux:Property="textfont" />
 	<Selectable Value="{Property labelbutton}" />
 	<Text ux:Name="textbutton" Alignment="Center" FontSize="10" Color="#fff" Margin="20,0,0,0" Value="{Property labelbutton}" />
 	<Text ux:Name="iconbutton" Alignment="Center" Font="FontAwesome" Color="#fff" Value="{Property textfont}"  Margin="-10,0,30,0"/>
-	<Stroke Color="#DC4353" />
+	<Stroke Color="#388E3C" />
 	<WhileSelected>
-		<Change iconbutton.Color="#DC4353" Duration="0.2" />
-		<Change textbutton.Color="#DC4353" Duration="0.2" />
+		<Change iconbutton.Color="#388E3C" Duration="0.2" />
+		<Change textbutton.Color="#388E3C" Duration="0.2" />
 		<Change this.Color="#fff" Duration="0.2" /> 
 	</WhileSelected>
 	<Tapped>

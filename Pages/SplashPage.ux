@@ -2,10 +2,10 @@
 	
 	<PageControl>
 			<Page>
-				<Panel Background="#DC4353">
+				<Panel Background="#388E3C">
 					<Panel ux:Class="Icon" Width="80" Height="80">
 						<Image Source="{Resource iconFile}" Width="60%" Height="60%"/>
-						<Circle Color="#DC4353">
+						<Circle Color="#388E3C">
 							<Stroke Brush="#fff" Width="3"/>
 						</Circle>
 					</Panel>
@@ -44,12 +44,12 @@
 								<Panel ux:Name="Send" Width="80" Height="80" Opacity="0">
 									<Panel ux:Name="sendImage">
 										<Image File="../Icons/send.png" Width="60%" Height="60%"/>
-										<Image File="../Icons/send.png" Width="90%" Height="90%" Color="#DC4353"/>
+										<Image File="../Icons/send.png" Width="90%" Height="90%" Color="#388E3C"/>
 										<Scaling ux:Name="sendScaling" Factor="0.7"/>
 										<Translation X="5" />
 										<Rotation Degrees="-45" />
 									</Panel>
-									<Circle Color="#DC4353">
+									<Circle Color="#388E3C">
 										<Stroke Brush="#fff" Width="3"/>
 									</Circle>
 								</Panel>

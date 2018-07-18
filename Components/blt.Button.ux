@@ -2,7 +2,7 @@
 	<string ux:Property="Text" />
 	<float ux:Property="FontSize" />
 
-	<Rectangle Layer="Background" Color="#DC4353" CornerRadius="4">
+	<Rectangle Layer="Background" Color="#388E3C" CornerRadius="4">
 		<DropShadow Angle="90" Distance="1" Spread="0.2" Size="2" Color="#00000060" />
 	</Rectangle>
 
