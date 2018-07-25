@@ -6,7 +6,8 @@
     "FuseJS",
     "Fuse.Camera",
     "Fuse.CameraRoll",
-    "Fuse.ImageTools"
+    "Fuse.ImageTools",
+    "Fuse.Launcher"
   ],
   "Includes": [
     "*"

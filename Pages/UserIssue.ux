@@ -1,5 +1,7 @@
 <Page ux:Class="UserIssue">
     <Router ux:Dependency="router" />
+    <DockLayout />
+    <ClientPanel>
     <Panel Height="70" ux:Name="iconTab" Background="#FFFFFF" Alignment="Top">
         <Image File="../Assets/logo.png" Margin="20,18,0,25" Alignment="TopLeft" />
         <Text Margin="18,46,0,0" Opacity="1" TextAlignment="Center" FontSize="12" Alignment="TopLeft" TextColor="#000000">Report Issues, Win Prizes</Text>
@@ -65,7 +67,11 @@
             </Text>
         </Panel>
         <Panel ux:Name="contentPlaceholder" Margin="0,110,0,10" />
-        <DockPanel Background="#fff">
+        <DockPanel Background="#fff">	   	
+        	<WhileFalse Value="{userissue_flag}">
+        		<Text Value="No Data Found" Alignment="VerticalCenter" TextAlignment="Center"/>
+        	</WhileFalse>
+        	<WhileTrue Value="{userissue_flag}">
             <Panel Alignment="BottomRight" Margin="10,50" Padding="10">
                 <Circle Layer="Background" Color="#FFFB" />
                 <Text Value="⬆" FontSize="45" Color="#000" />
@@ -73,6 +79,7 @@
                     <ScrollTo Target="mainScrollView" Position="0,0" />
                 </Clicked>
             </Panel>
+        </WhileTrue>
             <ScrollView ux:Name="mainScrollView" ClipToBounds="false" LayoutMode="PreserveVisual" Margin="0,150,0,50">
                 <WhileScrollable ScrollDirections="Down" Invert="true">
                     <Callback Handler="{fetchUserdData}" />
@@ -173,5 +180,7 @@
                 <Shadow Size="2" Distance="2" Color="#0003" />
             </Rectangle>
         </StackPanel>
+
     </Panel>
+</ClientPanel>
 </Page>
