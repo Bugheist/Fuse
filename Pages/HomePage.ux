@@ -2,7 +2,13 @@
     <Router ux:Dependency="router" />
     <JavaScript File="HomePage.js" />
     <DockLayout />
-    <ClientPanel>
+    <WhileTrue Value="{loading_page}">
+        <Text Value="Reporting Issue, Please Wait" Alignment="VerticalCenter" TextAlignment="Center"/>
+        <Change Main.Opacity="0.3" />
+        <Change Loading.Radius="5" />
+    </WhileTrue>
+    <ClientPanel ux:Name="Main">
+        <Blur ux:Name="Loading" Radius="0" />
         <WhileString Value="{first_launch_flag}" Equals="True">
             <SplashPage />
         </WhileString>
@@ -140,11 +146,11 @@
                         </Panel>
                         <Panel HitTestMode="LocalBounds">
                             <Grid Columns="auto,1*" Margin="30,0" Alignment="Left">
-                                <TabIcon ux:Name="c4" File="../Assets/scoreboard.png" />
-                                <TabHeader ux:Name="h4" Value="Scoreboard" />
+                                <TabIcon ux:Name="c4" File="../Assets/Scoreboard.png" />
+                                <TabHeader ux:Name="h4" Value="ScoreCard" />
                             </Grid>
                             <Clicked>
-                                <Set nav.Active="Scoreboard" />
+                                <Set nav.Active="ScoreCard" />
                             </Clicked>
                         </Panel>
                     </Grid>
@@ -171,7 +177,7 @@
                                     <Text Margin="25,30" TextAlignment="Center" FontSize="35" Alignment="TopCenter" TextColor="#388E3C">FIND BUGS</Text>
                                     <Text Margin="0,80" TextAlignment="Center" FontSize="35" Alignment="TopCenter" TextColor="#000000" Font="Bold">WIN POINTS PRIZES !</Text>
                                     <Text Margin="15,130" TextAlignment="Center" FontSize="12" Alignment="TopCenter" TextColor="#000000">Enter URL,App name or GPS location of issue</Text>
-                                    <Text Margin="0,150" TextAlignment="Center" FontSize="8" Alignment="TopCenter" TextColor="#ff0000" Font="Bold">{dom_check}</Text>
+                                    <Text Margin="0,150" TextAlignment="Center" FontSize="10" Alignment="TopCenter" TextColor="#ff0000" Font="Bold">{dom_check}</Text>
                                     <Rectangle Width="280" Margin="0,-160,0,0" Height="30" CornerRadius="20">
                                         <Stroke Width="1" Brush="#dcdee3" />
                                         <TextInput PlaceholderText="Enter Wesite" Value="{Issuesite}" Margin="5,5,5,5" BoxSizing="Standard" Alignment="Top" />
@@ -226,16 +232,16 @@
                                     <Callback Handler="{fetchAppendData}" />
                                 </WhileScrollable>
                                 <StackPanel Margin="0,0,0,0">
-                                    <Panel Height="80" Background="#686868" Alignment="Top" Margin="0,0" ux:Name="infoPanel" LayoutRole="Standard" Layer="Background">
-                                        <Panel Height="100%" Width="50%" Alignment="Left">
+                                    <Rectangle Height="80" Color="#388E3C" Alignment="Top" Margin="0,0" ux:Name="infoPanel" LayoutRole="Standard" Layer="Background" CornerRadius="0,0,5,5">
+                                        <Rectangle Height="80" Width="49.4%" Alignment="Left" Color="#67c26b" CornerRadius="0,0,0,5">
                                             <Text Dock="Bottom" Margin="0,15" Opacity=".5" TextAlignment="Center" FontSize="12" Alignment="Bottom" TextColor="#FFFFFF" Font="Bold">BUST BUY</Text>
-                                        </Panel>
-                                        <Panel Height="80" Width="50%" Margin="0,-180" Alignment="Right" Background="#000000">
+                                    </Rectangle>
+                                        <Rectangle Height="80" Width="49.4%" Margin="0,-180" Alignment="Right" Color="#67c26b" CornerRadius="0,0,5,0">
                                             <Text Opacity=".5" TextAlignment="Center" Margin="50,10,0,0" FontSize="15" Alignment="TopLeft" TextColor="#FFFFFF" Font="Bold">Current Bugs</Text>
-                                            <Text Opacity=".5" Margin="060,57,0,57" TextAlignment="Center" FontSize="12" Alignment="CenterLeft" TextColor="#FFFFFF" Font="Bold">{open} : Open Bugs</Text>
-                                            <Text Margin="60,0,0,30" Opacity=".5" TextAlignment="Center" FontSize="12" Alignment="BottomLeft" TextColor="#FFFFFF" Font="Bold">{closed} : Closed Bugs</Text>
-                                        </Panel>
-                                    </Panel>
+                                            <Text Opacity=".5" Margin="52,57,0,57" TextAlignment="Center" FontSize="12" Alignment="CenterLeft" TextColor="#FFFFFF" Font="Bold">{open} : Open Bugs</Text>
+                                            <Text Margin="47,0,0,30" Opacity=".5" TextAlignment="Center" FontSize="12" Alignment="BottomLeft" TextColor="#FFFFFF" Font="Bold">{closed} : Closed Bugs</Text>
+                                        </Rectangle>
+                                    </Rectangle>
                                     <Selection MinCount="0" MaxCount="1" />
                                     <Each Items="{dataSource}">
                                         <EventCard layoutTarget="contentPlaceholder">
@@ -316,6 +322,17 @@
                                             <BodyText Value="{description}" />
                                             <SmallHeaderText>Status</SmallHeaderText>
                                             <BodyText Value="{status}" />
+                                            <WhileTrue Value="{loginflag}">
+                                            <WhileString Value="{user.id}" Equals="{user_id}">
+                                            <optionbutton labelbutton="Delete Issue" CornerRadius="8,8,8,8" Margin="0,10,0,10" Clicked="{deleteIssue}" />
+                            <WhileString Value="{status}" Equals="open">
+                            <optionbutton labelbutton="Close Issue" CornerRadius="8,8,8,8" Margin="0,10,0,10" Clicked="{updateIssue}" />
+                        </WhileString>
+                        <WhileString Value="{status}" Equals="closed">
+                            <optionbutton labelbutton="Open Issue" CornerRadius="8,8,8,8" Margin="0,10,0,10" Clicked="{updateIssue}" />
+                        </WhileString>
+                    </WhileString>
+                </WhileTrue>
                                         </StackPanel>
                                     </ScrollView>
                                 </DockPanel>
@@ -387,7 +404,11 @@
                             </StackPanel>
                         </ScrollView>
                     </Page>
-                    <Page ux:Name="Scoreboard" Background="#FFFF00">
+                    <Page ux:Name="ScoreCard" Background="#FFFF00">
+                        <LinearGradient StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="#CED6DE" />
+                            <GradientStop Offset="1" Color="#93ADBD" />
+                        </LinearGradient>
                         <WhileActive Threshold="0.5">
                             <Set shrinkIndicatorWidth.Value="false" />
                             <Set indicatorColorAttractor.Value="#67c26b" />
@@ -400,6 +421,102 @@
                             <Change col4.Width="2" />
                             <Change c4.Color="White" />
                         </ActivatingAnimation>
+
+        <Panel ux:InnerClass="Card" Opacity="0.4">
+            <Scaling ux:Name="pageScaling" Factor="0.95" />
+
+            <ActivatingAnimation>
+                <Change this.Opacity="1" Duration="0.5" />
+                <Change pageScaling.Factor="1" Duration="0.5" />
+            </ActivatingAnimation>
+            <EnteringAnimation Scale="0.5">
+                <Move X="-1.4" RelativeTo="ParentSize" Duration="0.5" />
+            </EnteringAnimation>
+            <ExitingAnimation Scale="0.5">
+                <Move X="1.4" RelativeTo="ParentSize" Duration="0.5" />
+            </ExitingAnimation>
+
+            <SwipeGesture ux:Name="swipe" Direction="Up" Type="Active" />
+            <SwipingAnimation Source="swipe">
+                <Move Target="topPanel" Y="-0.3" RelativeTo="Size" Duration="0.5" />
+                <Change bottomPanelScaling.X="1" Duration="0.5" />
+                <Change bottomPanelScaling.Y="1" Duration="0.5" />
+                <Change bottomPanel.Opacity="1" Duration="0.5" />
+            </SwipingAnimation>
+            <WhileInactive Threshold="0.2">
+                <SetSwipeActive Target="swipe" Value="false" />
+            </WhileInactive>
+
+            <Panel ux:Name="topPanel" Width="60%" Height="60%">
+                <Rectangle CornerRadius="5" Layer="Background">
+                    <LinearGradient StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Offset="0" Color="#0004" />
+                        <GradientStop Offset="0.25" Color="#0000" />
+                        <GradientStop Offset="0.7" Color="#0000" />
+                        <GradientStop Offset="0.85" Color="#0007" />
+                        <GradientStop Offset="1" Color="#0007" />
+                    </LinearGradient>
+                </Rectangle>
+                <Text Value="{name}" FontSize="24" Color="#ddd" Alignment="HorizontalCenter" Margin="10,2,10,10">
+                    <Shadow Mode="PerPixel" />
+                </Text>
+                <WhileString Value="{top}" Equals="None" Invert="true">
+                <Grid ColumnCount="1" Margin="20" Alignment="Bottom">
+                    <Text Value="Top Scorer : {top}" FontSize="10" Color="#fff" Alignment="Center" />
+                </Grid>
+            </WhileString>
+                <Rectangle ux:Name="topPanelRect" Layer="Background" CornerRadius="5">
+                    <WhileString Value="{logo}" Equals="None">
+                        <Text Value="Oops !" Alignment="VerticalCenter" TextAlignment="Center"/>
+                        <Text Value="No Logo Available" Alignment="VerticalCenter" TextAlignment="Center" Margin="0,40,0,0"/>
+                    </WhileString>
+
+                    <WhileString Value="{logo}" Equals="None" Invert="true">
+                        <Rectangle>
+                                <Image Url="{logo}" />
+                                <WhileLoading>
+                                    <Text Value="Loading" />
+                                </WhileLoading>
+                </Rectangle>
+ 
+                </WhileString>
+                    <Shadow/>
+                </Rectangle>
+
+            </Panel>
+
+            <Panel ux:Name="bottomPanel" Width="70%" Height="70%" Opacity="0">
+                <Rectangle Layer="Background" Color="#eee" CornerRadius="5">
+                    <Shadow />
+                </Rectangle>
+                <Scaling ux:Name="bottomPanelScaling" Y="0.8" X="0.85" />
+
+                <Grid Rows="20,20,20,20,20" ColumnCount="2" Alignment="Bottom" Height="30%" Padding="20,10">
+                    <Text Color="#444" FontSize="14" Row="0" Column="0" ColumnSpan="2" Value="Last Modified : {modified}" />
+                    <Text Color="#444" FontSize="14" Row="1" Column="0" Value="Open Issues : {open}" Alignment="VerticalCenter" />
+                          <Text Color="#444" FontSize="14" Row="2" Column="0"  Value="Closed Issues : {closed}" Alignment="VerticalCenter" />
+                    <optionbutton labelbutton="Submit a Bug" CornerRadius="8,8,8,8" Row="3" Column="0" Margin="0,20,0,10">
+                        <Clicked>
+                            <Set nav.Active="ReportBug" />
+                            <Callback Handler="{submitbug}" />
+                        </Clicked>
+                    </optionbutton>
+                </Grid>
+            </Panel>
+        </Panel>
+
+        <Panel>
+            <PageControl InactiveState="Unchanged" Transition="None">
+
+                <NavigationMotion GotoEasing="QuadraticOut" GotoDuration="0.3" />
+                     
+                <Each Items="{scorecarddata}" >
+                    <Card Margin="0,100,0,0"/>
+                </Each>
+            </PageControl>
+
+                
+        </Panel>
                     </Page>
                 </PageControl>
             </Page>
@@ -416,16 +533,18 @@
                     </NativeViewHost>
                 </Panel>
             </Page>
-            <Page ux:Name="BugHunt">
+            <Page ux:Name="BugHunt" Background="#67c26b">
+                <Text Alignment="VerticalCenter" TextAlignment="Center" Value="Comming Soon !!" />
             </Page>
             <Page ux:Name="Squish">
             </Page>
             <Page ux:Name="User" Background="#67c26b">
                 <StateGroup ux:Name="UserState" Active="{loginstate}" >
                     <State  ux:Name="loginpage">
+                        <ScrollView>
                         <Panel IsEnabled="True">
                             <Panel Margin="50" >
-                                <Panel Row="2" Width="350" Height="60" Alignment="Center" Margin="0,350,0,100">
+                                <Panel Row="2" Width="350" Height="60" Alignment="Center" Margin="0,380,0,100">
                                     <Text Value="{loginerror}" Color="#ff0000" Margin="40,-30,0,0"/>
                                     <Text ux:Name="text" Alignment="Center" Value="Log in" FontSize="18" Color="#fff" />
                                     <Panel ux:Name="loadingCirclePanel">
@@ -441,7 +560,17 @@
                                         <Scaling Factor="0.25" />
                                     </Circle>
                                 </Panel>
-                                <Panel Row="2" Width="350" Height="60" Alignment="Center" Margin="0,400,0,0">
+                                <Text Alignment="Center" Value="Forgot Password ?" FontSize="15" Color="#fff" Margin="0,150,0,0">
+                                    <Text Value="Click Here" Color="#fff" Margin="130,0,0,0" Font="Bold">
+                                        <Clicked>
+                                        <LaunchUri Uri="https://www.bugheist.com/accounts/password/reset/" />
+                                    </Clicked>
+                                    </Text>
+                                </Text>
+                                <Panel Row="2" Width="350" Height="60" Alignment="Center" Margin="0,420,0,0">
+                                    <Clicked>
+                                        <LaunchUri Uri="https://www.bugheist.com/accounts/signup/" />
+                                    </Clicked>
                                     <Text Alignment="Center" Value="Sign Up" FontSize="18" Color="#fff" />
                                     <Rectangle  CornerRadius="30" Color="#388E3C" Width="300" Height="60" />
                                     <Circle  Opacity="0" Alignment="Center" Layer="Background" Width="240" Height="240" Color="#388E3C">
@@ -471,6 +600,7 @@
                                 </Grid>
                             </Panel>
                         </Panel>
+                    </ScrollView>
                     </State>
                     <State ux:Name="loggedin">
                         <ScrollView>

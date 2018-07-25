@@ -2,10 +2,13 @@
     <Router ux:Dependency="router" />
     <DockLayout />
     <ClientPanel>
-        <NativeViewHost>
-            <WhileString Value="{first_launch_flag}" Equals="True">
-                <SplashPage />
-            </WhileString>
+        <WhileTrue Value="{loading_page}">
+        <Text Value="Searching, Please Wait" Alignment="VerticalCenter" TextAlignment="Center"/>
+        <Change LoadingSearch.Opacity="0.3" />
+        <Change LoadingSearchBlur.Radius="5" />
+    </WhileTrue>
+        <NativeViewHost ux:Name="LoadingSearch">
+            <Blur ux:Name="LoadingSearchBlur" Radius="0"/>
             <StackPanel>
                 <Text Value="Search Type  " Margin="0,75,150,0" Alignment="Center" Color="#fff"/>
                 <CycleButton Width="50%" Alignment="Top"  Modes="{modes}" CurrentMode="{currentMode}" Margin="100,-25,0,0"/>

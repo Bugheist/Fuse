@@ -12,6 +12,7 @@ var userpaginationOffset = 1;
 var search_data = exports.search_data = Observable("");
 var user_data = exports.user_data = Observable("");
 var leaderboarddata = exports.leaderboarddata = Observable("");
+var scorecarddata = exports.scorecarddata = Observable("");
 var api_url = "https://www.bugheist.com/api/v1/";
 var FileSystem = require("FuseJS/FileSystem");
 var Storage = require("FuseJS/Storage");
@@ -43,7 +44,7 @@ var user_issuepage = Observable("1");
 var Camera = require('FuseJS/Camera');
 var ImageTools = require('FuseJS/ImageTools');
 var web_url = "https://www.bugheist.com/";
-
+var loading_page = Observable(false)
 function logout() {
     loginstate.value = "loginpage";
     loginflag.value = false;
@@ -179,6 +180,7 @@ function selectimage() {
 }
 
 function search() {
+    loading_page.value=true;
     if (currentMode.value == '0') {
         urlsearch = api_url + 'issues/?search=' + searchbox_field.value;
     } else if (currentMode.value == '1') {
@@ -225,6 +227,7 @@ function search() {
                 }
             }
             search_data.replaceAll(responseObject.results);
+    loading_page.value = false;
         });
     searchflag.value = true;
     searchtype.value = currentMode.value;
@@ -253,17 +256,32 @@ function leaderboard() {
         leaderboarddata.replaceAll(responseObject);
     })
 }
-scoreboard();
-
-function scoreboard() {
-    urlleaderboard = api_url + 'scoreboard/';
-    fetch(urlleaderboard, {
+scorecard();
+function submitbug(args){
+    dom_check.value  = "Submit Your Bug For " + args.data.name;
+    Issuesite.value = args.data.name;
+    Issuedesc.value = "";
+    screenshotupload.value = "";
+    screenshotname.value = "";
+    Issuetype.value = "";
+}
+function scorecard() {
+    var url = api_url + 'scoreboard/';
+    fetch(url, {
         method: 'GET',
     }).then(function(response) {
         return response.json();
     }).then(function(responseObject) {
-        console.log("WORKING ON IT")
-    })
+        for(item in responseObject){
+            if(responseObject[item].logo == "None")
+                responseObject[item].logo = "None";
+            else
+                responseObject[item].logo = responseObject[item].logo.replace(':443','');
+            responseObject[item].modified = responseObject[item].modified.slice(0, 10);
+            scorecarddata.replaceAll(responseObject);
+        }
+        
+    });
 }
 
 function deleteIssue(args) {
@@ -275,6 +293,12 @@ function deleteIssue(args) {
             appendinguserData.value = false;
             user_issuepage.value = 1;
             userissues(user_id.value);
+            
+                    leaderboard();
+                    paginationOffset = 1;
+                    appendingData.value = false;
+                    searchIssues();
+
         }
     });
     var data = "token=" + usertoken.value;
@@ -288,7 +312,6 @@ function deleteIssue(args) {
 }
 function updateIssue(args) {
     var xhr = new XMLHttpRequest();
-    console.log(args.data.status)
     xhr.withCredentials = true;
 
     xhr.addEventListener("readystatechange", function() {
@@ -296,6 +319,11 @@ function updateIssue(args) {
             appendinguserData.value = false;
             user_issuepage.value = 1;
             userissues(user_id.value);
+
+                    leaderboard();
+                    paginationOffset = 1;
+                    appendingData.value = false;
+                    searchIssues();
         }
     });
     if(args.data.status == "open")
@@ -420,6 +448,10 @@ function saveIssuesite() {
 }
 
 function domaincheck() {
+    if (Issuesite.value == ""){
+            dom_check.value = "Please Fill in the Fields ";
+            return;
+        }
     var obj = "dom_url=" + Issuesite.value;
     var url = web_url + "domain_check/";
     var domain_check = new XMLHttpRequest();
@@ -440,7 +472,7 @@ function domaincheck() {
     domain_check.send(obj);
 
 }
-
+var userissue_flag=Observable(true);
 function userissues(appendData) {
     var url = api_url + "userissues/?page=" + user_issuepage.value + "&search=" + appendData;
     fetch(url, {
@@ -450,7 +482,8 @@ function userissues(appendData) {
             return response.json();
         })
         .then(function(responseObject) {
-
+            if(JSON.stringify(responseObject.results) == "[]")
+                  userissue_flag.value = false  
             for (j in responseObject.results) {
                 responseObject.results[j].modified = responseObject.results[j].modified.slice(0, 10);
                 responseObject.results[j].created = responseObject.results[j].created.slice(0, 10);
@@ -488,7 +521,7 @@ function userissues(appendData) {
 }
 
 function reportIssue() {
-
+    loading_page.value=true;
     if (Issuetype.value == "general") {
         Issuetype.value = 0;
     } else if (Issuetype.value == "numbererror") {
@@ -504,11 +537,20 @@ function reportIssue() {
     } else if (Issuetype.value == "design") {
         Issuetype.value = 6;
     }
+    domaincheck();
+    if(dom_check.value == "A bug with same URL already exists"){
+         loading_page.value=false;
+        return;
+    }
     if (screenshotupload.value != "Upload") {
-        if (usertoken.value == "")
+        if (usertoken.value == ""){
             dom_check.value = "You Are Not Logged in Yet";
-        else if (Issuetype.value == "" || Issuedesc.value == "" || Issuesite.value == "")
+             loading_page.value=false;
+        }
+        else if (Issuetype.value == "" || Issuedesc.value == "" || Issuesite.value == ""){
             dom_check.value = "Check if all fields have been filled";
+            loading_page.value=false;
+        }
         else {
             var Base64 = require("FuseJS/Base64");
             var arrayBuff = FileSystem.readBufferFromFileSync(screenshotupload.value);
@@ -531,10 +573,17 @@ function reportIssue() {
                 if (this.readyState === 4) {
                     if ((xhr.responseText) == '"Created"')
                         dom_check.value = "Issue Posted";
+                    Issuesite.value = "";
                     Issuetype.value = "";
                     Issuedesc.value = "";
                     screenshotname.value = "";
                     screenshotupload.value = "";
+                    userissues(user_id.value);      
+                    leaderboard();
+                    paginationOffset = 1;
+                    appendingData.value = false;
+                    searchIssues();
+                    loading_page.value=false;
                 }
             });
             xhr.open("POST", "https://www.bugheist.com/api/v1/createissues/");
@@ -543,9 +592,11 @@ function reportIssue() {
             xhr.setRequestHeader("Postman-Token", "03cdb8c9-9614-4a23-a413-022dbfc1ca20");
 
             xhr.send(JSON.stringify(obj));
+
         }
     } else {
         dom_check.value = "Check if all fields have been filled";
+         loading_page.value=false;
     }
 }
 
@@ -628,6 +679,7 @@ function mapOptions(opts) {
 };
 update();
 module.exports = {
+    loading_page: loading_page,
     updateIssue: updateIssue,
     deleteIssue: deleteIssue,
     dom_check: dom_check,
@@ -640,6 +692,7 @@ module.exports = {
     userwinning: userwinning,
     userupvoted: userupvoted,
     logintab: logintab,
+    submitbug: submitbug,
     logout: logout,
     loading: loading,
     loginerror: loginerror,
@@ -654,6 +707,7 @@ module.exports = {
     checkfirst_launch: checkfirst_launch,
     first_launch_flag: first_launch_flag,
     leaderboard: leaderboard,
+    scorecarddata: scorecarddata,
     currentMode: currentMode,
     modes: modes,
     searchflag: searchflag,
@@ -671,6 +725,7 @@ module.exports = {
     Issuedevice: Issuedevice,
     IssueList: mapOptions(IssueList),
     web: web,
+    user_id: user_id,
     ios: ios,
     android: android,
     link: link,
@@ -689,6 +744,8 @@ module.exports = {
     domaincheck: domaincheck,
     userissues: userissues,
     user_data: user_data,
+    userissue_flag: userissue_flag,
+    scorecard: scorecard,
     fetchAppendData: function() {
         searchIssues(true)
     },
